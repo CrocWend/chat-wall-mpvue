@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="test">
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+    <script src="node_modules/angular/angular.min.js"></script>
+</head>
+<body ng-controller="testController">
+    <input type="number" ng-model="num1">
+    <script>
+        (function(angular){
+            angular.module('test',[])
+                .controller('testController',['$scope',function($scope) {
+                    $scope.num1=1;
+                }])
+        })(angular);
+    </script>
+</body>
+</html>

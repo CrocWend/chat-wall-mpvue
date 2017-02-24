@@ -2,7 +2,7 @@
 * @Author: leesipeng
 * @Date:   2017-02-24 11:47:56
 * @Last Modified by:   leesipeng
-* @Last Modified time: 2017-02-24 15:09:07
+* @Last Modified time: 2017-02-24 17:01:49
 */
 body {
     font-family: "微软雅黑";
@@ -49,7 +49,7 @@ body {
 .container .con-center .center-point {
     position: absolute;
     width: 100%;
-    height: 1px;
+    height: 5px;
     left: 0;
     top: 0;
     background: rgba(255,255,255,.7);

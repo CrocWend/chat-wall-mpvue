@@ -1,35 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 <head>
     <meta charset="UTF-8">
     <title>颜色选择器</title>
     <link rel="stylesheet" href="css/index.css">
-    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <!-- <script src="node_modules/jquery/dist/jquery.min.js"></script> -->
     <script src="node_modules/angular/angular.min.js"></script>
     <script src="js/index.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container" ng-controller="colorController">
         <div class="con-left">
             <div class="con-left-mark"></div>
-            <div class="con-left-color" id="con_left_color"></div>
+            <div class="con-left-color" id="con_left_color" ng-style="setColor"></div>
         </div>
-        <div class="con-center" id="con_center">
-            <span class="center-point" id="center_point"></span>
+        <div class="con-center" id="con_center" ng-mousedown="getRgb($event)">
+            <span class="center-point" id="center_point" ng-style="setTop"></span>
         </div>
         <div class="con-right">
             <div class="input-item">
                 <div>
                     <span>R</span>
-                    <input type="number" id="rNum" value="255">
+                    <input type="number" ng-model="rNum">
                 </div>
                 <div>
                     <span>G</span>
-                    <input type="number" id="gNum" value="0">
+                    <input type="number" ng-model="gNum">
                 </div>
                 <div>
                     <span>B</span>
-                    <input type="number" id="bNum" value="0">
+                    <input type="number" ng-model="bNum">
                 </div>
                 <span class="line"></span>
             </div>
