@@ -10,26 +10,27 @@
 </head>
 <body>
     <div class="container" ng-controller="colorController">
-        <div class="con-left">
+        <div class="con-left" ng-mousedown="getLeftColor($event)">
+            <div class="con-left-point" id="con_left_point"></div>
             <div class="con-left-mark"></div>
             <div class="con-left-color" id="con_left_color" ng-style="setColor"></div>
         </div>
-        <div class="con-center" id="con_center" ng-mousedown="getRgb($event)">
+        <div class="con-center" id="con_center" ng-mousedown="getCenterColor($event)">
             <span class="center-point" id="center_point" ng-style="setTop"></span>
         </div>
         <div class="con-right">
             <div class="input-item">
                 <div>
                     <span>R</span>
-                    <input type="number" ng-model="rNum">
+                    <input type="number" min="0" max="255" ng-model="rNum">
                 </div>
                 <div>
                     <span>G</span>
-                    <input type="number" ng-model="gNum">
+                    <input type="number" min="0" max="255" ng-model="gNum">
                 </div>
                 <div>
                     <span>B</span>
-                    <input type="number" ng-model="bNum">
+                    <input type="number" min="0" max="255" ng-model="bNum">
                 </div>
                 <span class="line"></span>
             </div>
@@ -37,15 +38,15 @@
             <div class="input-item">
                 <div>
                     <span>H</span>
-                    <input type="number" id="hNum">
+                    <input type="number" min="0" max="255" ng-model="hNum">
                 </div>
                 <div>
                     <span>S</span>
-                    <input type="number" id="sNum">
+                    <input type="number" min="0" max="255" ng-model="sNum">
                 </div>
                 <div>
                     <span>L</span>
-                    <input type="number" id="lNum">
+                    <input type="number" min="0" max="255" ng-model="lNum">
                 </div>
             </div>
         </div>

@@ -2,7 +2,7 @@
 * @Author: leesipeng
 * @Date:   2017-02-24 11:47:56
 * @Last Modified by:   leesipeng
-* @Last Modified time: 2017-02-24 17:01:49
+* @Last Modified time: 2017-02-24 21:57:42
 */
 body {
     font-family: "微软雅黑";
@@ -23,6 +23,16 @@ body {
     width: 400px;
     height: 400px;
     border: 1px solid #dedede;
+}
+.container .con-left-point {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 2px;
+    height: 2px;
+    // background-color: rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,0,0,.5);
+    z-index: 99;
 }
 .container .con-left-mark {
     position: absolute;

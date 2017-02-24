@@ -2,7 +2,7 @@
 * @Author: leesipeng
 * @Date:   2017-02-24 11:48:02
 * @Last Modified by:   leesipeng
-* @Last Modified time: 2017-02-24 18:43:19
+* @Last Modified time: 2017-02-24 22:01:33
 */
 
 'use strict';
@@ -99,16 +99,18 @@
 // })
 
 
-(function(angular) {
+(function(angular,window) {
 
     angular.module('app',[])
         .controller('colorController',['$scope','$window','$document',function($scope,$window,$document) {
             $scope.rNum = 255;
             $scope.gNum = 0;
-            $scope.bNum = 0;
+            $scope.bNum = 1;
+            $scope.sNum = 0;
+
 
             $scope.$watch('bNum',function() {
-                if($scope.rNum <= 255 && $scope.gNum >= 0) {
+                if($scope.rNum == 255 && $scope.gNum == 0) {
                     $scope.setTop = {
                         'top':$scope.bNum*400/6/255+'px'
                         // 'top':$scope.rNum+'px'
@@ -156,8 +158,9 @@
                 }
             })
 
-            $scope.getRgb = function(event) {
+            $scope.getCenterColor = function(event) {
 
+                var perBlock = event.target.offsetHeight / 6;
 
                 if(event.target.id !== 'con_center'){
                     return false;
@@ -168,9 +171,11 @@
                 }
 
                 var top = event.offsetY;
-                var perBlock = event.target.offsetHeight / 6;
 
-                console.log(top)
+
+                // console.log(top)
+                $scope.hNum = parseInt(360-360/400*top);
+
                 // console.log(perBlock)
                 if(top >= 0 && top <= perBlock){
 
@@ -231,8 +236,51 @@
                         };
                 }
 
+            };
+
+            $scope.getLeftColor = function(event) {
+                // event.target.offsetParent.children[0].style.left = 10;
+                var perBlock = event.target.offsetHeight / 6;
+                // console.log(event.offsetX +'---'+ event.offsetY);
+
+                if(event.target.className !== 'con-left-mark'){
+                    return false;
+                }
+
+                var x = event.offsetX,
+                    y = event.offsetY,
+                    center_point = event.target.parentNode.nextElementSibling.children[0],
+                    c_top = center_point.offsetTop;
+
+                var left_point = event.target.previousElementSibling;
+                left_point.style.left = x-left_point.offsetWidth/2 + 'px';
+                left_point.style.top = y-left_point.offsetHeight/2 + 'px';
+
+                $scope.sNum = parseInt(x/400*100);
+
+                if(c_top >= 0 && c_top <= perBlock) {
+                    // $scope.rNum = parseInt(255 * $scope.sNum / 100);
+                    $scope.gNum = parseInt(255-255 * $scope.sNum / 100);
+                    $scope.bNum = parseInt(255-255 * $scope.sNum / 100);
+                }
+
             }
 
+
+            $scope.$watch('sNum',function() {
+                document.getElementById('con_left_point').style.left = $scope.sNum*4 + 'px';
+                // console.log(2)
+            })
+            $scope.$watch('rNum',function() {
+                document.getElementById('con_left_point').style.left = $scope.rNum*400/255 + 'px';
+                // console.log(2)
+            })
+
         }])
-})(angular);
+
+})(angular,window);
+
+
+
+
 
