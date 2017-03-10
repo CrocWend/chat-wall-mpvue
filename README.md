@@ -1,6 +1,6 @@
-# gulp脚手架工具
+# blog-demo
 
-> 基于connect（仅单页面写代码用）
+> 基于Node.js
 
 
 ## 有问题
@@ -45,4 +45,4 @@ $ gulp serve
 ## 相关项目
 
 - [leesipeng/webapp-lagou](https://github.com/leesipeng/webapp-lagou) - 仿拉勾网demo
-- [leesipeng/zufangzi-demo](https://github.com/leesipeng/zufangzi-demo) - 租房webapp
+
