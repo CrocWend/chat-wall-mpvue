@@ -1,17 +1,22 @@
 'use strict';
 
+// 引入抽象类
 var AbstractPage = require('./AbstractPage');
 
+// 继承抽象类
 class AddPage extends AbstractPage{
 
     constructor(error){
         super();
+        // 保存错误信息
         this.error = error || {};
     }
     
     _render(){
+        // 缓存对应错误信息
         let titleError = this.error.title || '';
         let bodyError = this.error.body || '';
+        
         return `
         <form action='/add' method='post'>
             <div class="form-group">

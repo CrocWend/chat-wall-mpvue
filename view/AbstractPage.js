@@ -12,7 +12,7 @@ class AbstractPage{
         throw new Error('子类必须实现');
     }
 
-    // 渲染
+    // 渲染方法 返回基本页面,内容根据子类的实现展示
     render(){
         return `
         <!DOCTYPE html>
