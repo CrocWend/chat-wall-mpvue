@@ -31,7 +31,7 @@ http.createServer(function(request,response) {
     if(action) {
         action(request, response);
     }else{
-        response.writeHead(404);
+        response.statusCode = 404;
         response.end();
     }
 }).listen(3000);

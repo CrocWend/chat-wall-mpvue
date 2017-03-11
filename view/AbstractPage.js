@@ -22,7 +22,9 @@ class AbstractPage{
                 <link rel='stylesheet' href='//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css'/>
             </head>
             <body class='container'>
-
+                <div class="jumbotron">
+                    <h1>Node.js Blog</h1>
+                </div>
                 <div>
                     <a href="/login" class="${this.isLogined ? 'hidden' : ''} btn btn-success">登录</a>
                     <a href="/logout" class="${this.isLogined ? '' : 'hidden'} btn btn-success">退出</a>

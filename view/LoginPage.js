@@ -38,7 +38,7 @@ class LoginPage extends AbstractPage{
             
             
             <button type="submit" class="btn btn-default">登录</button>
-            </form>
+        </form>
         `;
     }
 }

@@ -11,10 +11,10 @@ module.exports = function(req,res) {
         post(req).then((data) => {
             let loginname = data.loginname;
             let  password = data.password;
-
+console.log(req.session.vnum)
             if(loginname && password && loginname === 'lee' && password === '123456' && req.session.vnum === data.vnum){
                 req.session.isLogined = true;
-                
+                console.log(req.session.vnum)
                 indexAction(req,res);
             }else{
                 res.end(new LoginPage('登录失败,请重新登录').render());

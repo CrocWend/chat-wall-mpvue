@@ -41,7 +41,7 @@ class AddPage extends AbstractPage{
             </div>
             
             <button type="submit" class="btn btn-default">添加</button>
-            </form>
+        </form>
         `;
     }
 }
