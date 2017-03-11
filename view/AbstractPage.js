@@ -1,12 +1,18 @@
 'use strict';
 
+// 定义抽象类
 class AbstractPage{
+
     constructor(){
 
     }
+    
+    // 抽象方法
     _render(){
         throw new Error('子类必须实现');
     }
+
+    // 渲染
     render(){
         return `
         <!DOCTYPE html>
