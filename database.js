@@ -9,7 +9,7 @@ try{
     list = [];
 }
 
-
+console.log(__dirname)
 module.exports = {
     add(article){
         list.push(article);

@@ -1,8 +1,9 @@
 'use strict';
 
-let IndexPage = require('./view/IndexPage');
+let IndexPage = require('../view/IndexPage');
+let database = require('../database');
+
 module.exports = function(req, res) {
-    let name = 'lee'
-    res.writeHead('Content-Type','text/html');
-    res.end((new IndexPage(name)).render());
+
+    res.end((new IndexPage(database.list)).render());
 }

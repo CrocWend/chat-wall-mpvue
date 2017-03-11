@@ -12,12 +12,15 @@ class AbstractPage{
         <!DOCTYPE html>
         <html>
             <head>
-                <link rel='stylesheet' href='//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js'/>
+                <meta charset='utf-8' />
+                <link rel='stylesheet' href='//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css'/>
             </head>
-            <body>
+            <body class='container'>
                 ${this._render()}
             </body>
         </html>
     `
     }
 }
+
+module.exports = AbstractPage;
