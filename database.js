@@ -19,14 +19,17 @@ module.exports = {
     // 添加文章
     add(article){
         list.push(article);
+        this.store();
     },
     // 删除文章
     del(index){
         list.splice(index,1);
+        this.store();
     },
     // 更新文章
     update(index,newArticle){
         list.splice(index,1,newArticle);
+        this.store();
     },
     // 获取所有文章
     get list(){
@@ -34,6 +37,7 @@ module.exports = {
     },
     // 存储数据到指定位置
     store(callback){
+        callback = callback || function(){};
         // 文件位置 数据本身 回调函数
         fs.writeFile(filepath,JSON.stringify(list),callback);
     }

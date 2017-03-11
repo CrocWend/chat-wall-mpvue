@@ -7,7 +7,7 @@ let actionRepos = {};
 
 actionRepos['/add'] = require('./actions/add');
 actionRepos['/del'] = require('./actions/del');
-// actionRepos['/update'] = require('./actions/update');
+actionRepos['/update'] = require('./actions/update');
 actionRepos['/'] = require('./actions/index');
 
 // 当客户端访问时调用

@@ -19,6 +19,7 @@ class IndexPage extends AbstractPage{
             <p>${article.body}</p>
             <div>
                 <a href="/del?id=${index}">删除</a>
+                <a href="/update?id=${index}">编辑</a>
             </div>
         </li>`).join('');
         return `
