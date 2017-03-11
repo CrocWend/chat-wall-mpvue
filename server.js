@@ -4,14 +4,19 @@
 const http = require('http');
 const url = require('url');
 let actionRepos = {};
+let session = require('./session');
 
 actionRepos['/add'] = require('./actions/add');
 actionRepos['/del'] = require('./actions/del');
 actionRepos['/update'] = require('./actions/update');
 actionRepos['/'] = require('./actions/index');
+actionRepos['/login'] = require('./actions/login');
+actionRepos['/logout'] = require('./actions/logout');
 
 // 当客户端访问时调用
 http.createServer(function(request,response) {
+
+    request.session = session(request,response);
 
     // 统一写入头部信息
     response.writeHead('Content-Type','text/html'); 

@@ -6,8 +6,8 @@ var AbstractPage = require('./AbstractPage');
 // 继承抽象类
 class AddPage extends AbstractPage{
 
-    constructor(error){
-        super();
+    constructor(error,isLogined){
+        super(isLogined);
         // 保存错误信息
         this.error = error || {};
     }

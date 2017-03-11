@@ -5,8 +5,15 @@ const database = require('../database');
 const AddPage = require('../view/AddPage');
 const IndexPage = require('../view/IndexPage');
 const post = require('./post');
+const loginAction = require('./login');
 
 module.exports = function(req,res) {
+
+    if(!req.session.isLogined) {
+        loginAction(req,res);
+        return;
+    }
+
     // 如果是get请求 渲染添加页面表单
     if(req.method === 'GET') {
         res.end(new AddPage().render());
@@ -27,12 +34,12 @@ module.exports = function(req,res) {
             if(Object.keys(error).length) {
                 res.writeHead('Content-Type','text/html');
                 // 渲染添加页面 提示错误信息
-                res.end(new AddPage(error).render());
+                res.end(new AddPage(error,req.session.isLogined).render());
             }else {
                 // 添加数据
                 database.add(data);
                 // 渲染首页数据列表
-                res.end(new IndexPage(database.list).render());
+                res.end(new IndexPage(database.list,req.session.isLogined).render());
             }
         });
     }

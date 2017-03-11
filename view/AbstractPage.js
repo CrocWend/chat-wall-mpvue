@@ -3,8 +3,8 @@
 // 定义抽象类
 class AbstractPage{
 
-    constructor(){
-
+    constructor(isLogined){
+        this.isLogined = isLogined;
     }
     
     // 抽象方法
@@ -22,6 +22,13 @@ class AbstractPage{
                 <link rel='stylesheet' href='//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css'/>
             </head>
             <body class='container'>
+
+                <div>
+                    <a href="/login" class="${this.isLogined ? 'hidden' : ''} btn btn-success">登录</a>
+                    <a href="/logout" class="${this.isLogined ? '' : 'hidden'} btn btn-success">退出</a>
+                    <a href="/add" class="${this.isLogined ? '' : 'hidden'} btn btn-success">添加</a>
+                </div>
+
                 ${this._render()}
             </body>
         </html>

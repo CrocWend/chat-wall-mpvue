@@ -6,8 +6,8 @@ let AbstractPage = require('./AbstractPage');
 // 继承抽象类
 class EditPage extends AbstractPage{
 
-    constructor(id,article,error){
-        super();
+    constructor(id,article,error,isLogined){
+        super(isLogined);
         this.id = id;
         this.article = article;
         this.error = error;

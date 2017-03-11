@@ -6,9 +6,10 @@ let AbstractPage = require('./AbstractPage');
 // 继承抽象类
 class IndexPage extends AbstractPage{
 
-    constructor(articleList){
-        super();
+    constructor(articleList,isLogined){
+        super(isLogined);
         this.list = articleList;
+        this.isLogined = isLogined;
     }
     
     _render(){
@@ -17,7 +18,7 @@ class IndexPage extends AbstractPage{
         <li class="list-group-item">
             <h3>${article.title}</h3>
             <p>${article.body}</p>
-            <div>
+            <div class="${this.isLogined ? '' : 'hidden'}">
                 <a href="/del?id=${index}">删除</a>
                 <a href="/update?id=${index}">编辑</a>
             </div>
