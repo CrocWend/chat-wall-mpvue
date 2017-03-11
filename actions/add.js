@@ -1,11 +1,11 @@
 'use strict';
 
 // 引入自定义模块
-const database = require('../database');
-const AddPage = require('../view/AddPage');
-const IndexPage = require('../view/IndexPage');
-const post = require('./post');
-const loginAction = require('./login');
+let database = require('../database');
+let AddPage = require('../view/AddPage');
+let IndexPage = require('../view/IndexPage');
+let post = require('../utils/post');
+let loginAction = require('./login');
 
 module.exports = function(req,res) {
 
@@ -24,10 +24,15 @@ module.exports = function(req,res) {
         post(req).then(function(data) {
             let error = {};
             if(!(data.title && data.title.length >= 5)) {
-                error.title = 'title char lenght >= 5';
+                error.title = '标题长度必须大于5';
             }
+
             if(!(data.body && data.body.length >= 10)) {
-                error.body = 'body char lenght >= 10';
+                error.body = '内容长度必须大于10';
+            }
+
+            if(!(data.vnum === req.session.vnum)) {
+                error.vnum = '验证码错误';
             }
 
             // 判断有没有错误信息

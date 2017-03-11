@@ -14,9 +14,12 @@ class EditPage extends AbstractPage{
     }
     
     _render(){
+
+        let time = Date.now();
         // 缓存对应错误信息
         let titleError = this.error.title || '';
         let bodyError = this.error.body || '';
+        let vnumError = this.error.vnum || '';
         
         return `
         <form action='/update' method='post'>
@@ -30,6 +33,12 @@ class EditPage extends AbstractPage{
                 <label for="body">内容</label>
                 <textarea class="form-control" name="body" id="body" placeholder="内容">${this.article.body}</textarea>
                 <p>${bodyError}</p>
+            </div>
+
+            <div class="form-group">
+                <label for="vnum">验证码 <img src="/vnum?${time}" /></label>
+                <input type="text" class="form-control" name="vnum" id="vnum" placeholder="验证码">
+                <p>${vnumError}</p>
             </div>
             
             <button type="submit" class="btn btn-default">更改</button>

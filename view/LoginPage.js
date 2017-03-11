@@ -12,6 +12,7 @@ class LoginPage extends AbstractPage{
     }
     
     _render(){
+        let time = Date.now();
         // 缓存对应错误信息
         let titleError = this.error.title || '';
         let bodyError = this.error.body || '';
@@ -27,6 +28,12 @@ class LoginPage extends AbstractPage{
             <div class="form-group">
                 <label for="loginname">登录密码</label>
                 <input type="password" class="form-control" name="password" id="password" placeholder="登录密码">
+            </div>
+
+            <div class="form-group">
+                <label for="vnum">验证码 <img src="/vnum?${time}" /></label>
+                <input type="text" class="form-control" name="vnum" id="vnum" placeholder="验证码">
+                
             </div>
             
             

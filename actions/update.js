@@ -1,11 +1,11 @@
 'use strict';
 
-const EditPage = require('../view/EditPage');
-const database = require('../database');
-const query = require('./query');
-const post = require('./post');
-const indexAction = require('./index');
-const loginAction = require('./login');
+let EditPage = require('../view/EditPage');
+let database = require('../database');
+let query = require('../utils/query');
+let post = require('../utils/post');
+let indexAction = require('./index');
+let loginAction = require('./login');
 
 module.exports = function(req,res) {
 console.log(req.session.isLogined)

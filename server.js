@@ -12,6 +12,7 @@ actionRepos['/update'] = require('./actions/update');
 actionRepos['/'] = require('./actions/index');
 actionRepos['/login'] = require('./actions/login');
 actionRepos['/logout'] = require('./actions/logout');
+actionRepos['/vnum'] = require('./actions/vnum');
 
 // 当客户端访问时调用
 http.createServer(function(request,response) {

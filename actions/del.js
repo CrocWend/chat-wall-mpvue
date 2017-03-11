@@ -1,9 +1,9 @@
 'use strict';
 
 let database  = require('../database');
-let getId = require('./getId');
+let getId = require('../utils/getId');
 let indexAction = require('./index');
-const loginAction = require('./login');
+let loginAction = require('./login');
 
 module.exports = function del(req,res) {
 

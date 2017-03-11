@@ -1,7 +1,7 @@
 'use strict';
 
 let LoginPage = require('../view/LoginPage');
-let post = require('./post');
+let post = require('../utils/post');
 let indexAction = require('./index');
 
 module.exports = function(req,res) {
@@ -11,7 +11,8 @@ module.exports = function(req,res) {
         post(req).then((data) => {
             let loginname = data.loginname;
             let  password = data.password;
-            if(loginname && password && loginname === 'lee' && password === '123456'){
+
+            if(loginname && password && loginname === 'lee' && password === '123456' && req.session.vnum === data.vnum){
                 req.session.isLogined = true;
                 
                 indexAction(req,res);
