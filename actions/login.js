@@ -6,15 +6,16 @@ let indexAction = require('./index');
 
 module.exports = function(req,res) {
     if(req.method === 'GET') {
+        // 返回登录页面
         res.end(new LoginPage().render());
     }else {
         post(req).then((data) => {
             let loginname = data.loginname;
             let  password = data.password;
-console.log(req.session.vnum)
+            // 验证账号 密码 验证码
             if(loginname && password && loginname === 'lee' && password === '123456' && req.session.vnum === data.vnum){
+
                 req.session.isLogined = true;
-                console.log(req.session.vnum)
                 indexAction(req,res);
             }else{
                 res.end(new LoginPage('登录失败,请重新登录').render());

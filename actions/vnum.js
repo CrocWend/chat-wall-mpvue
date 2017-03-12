@@ -1,5 +1,6 @@
 'use strict';
 
+// 引入随机数 图片生成插件
 let PW = require('png-word');
 let RW = require('random-word');
 let pngword = new PW(PW.GREEN);
