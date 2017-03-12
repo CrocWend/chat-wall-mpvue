@@ -20,7 +20,7 @@ http.createServer(function(request,response) {
     request.session = session(request,response);
 
     // 统一写入头部信息
-    response.writeHead('Content-Type','text/html'); 
+    response.writeHead(200,{'Content-Type':'text/html'}); 
 
     // 使用url.parse()解析请求地址
     let pathname = url.parse(request.url).pathname;
@@ -32,6 +32,6 @@ http.createServer(function(request,response) {
         action(request, response);
     }else{
         response.statusCode = 404;
-        response.end('404');
+        response.end();
     }
 }).listen(3000);

@@ -25,15 +25,26 @@ module.exports = function(req,res) {
     }
     // post 更新
     else{
-        post(req).then( data=> {
-            /*let id = data.id,
-                title = data.title,
-                body = data.body;*/
-            let id = data.id;
-            delete data.id;
+        post(req).then(function(data) {
 
-            database.update(id,data);
-            indexAction(req,res);
+            let error = {};
+            if(!(data.title && data.title.length >= 5)) {
+                error.title = '标题长度必须大于5';
+            }
+
+            if(!(data.body && data.body.length >= 10)) {
+                error.body = '内容长度必须大于10';
+            }
+            if(Object.keys(error).length) {
+                res.writeHead(200,{'Content-Type':'text/html'});
+                // 渲染添加页面 提示错误信息
+                res.end(new EditPage(data.id,{title:data.title,body:data.body},error,req.session.isLogined).render());
+            }else{
+                let id = data.id;
+                delete data.id;
+                database.update(id,data);
+                indexAction(req,res);
+            }
         })
     }
 }
