@@ -1,5 +1,5 @@
 <template name="a-input">
   <view class="a-input">
-    <text class="title">24324</text>
+    <input type="idcard" placeholder="{{ placeholder }}"/>
   </view>
 </template>

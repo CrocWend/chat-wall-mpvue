@@ -7,7 +7,9 @@ Page({
    * 页面的初始数据
    */
   data: {
-    title: 'queryIdCard'
+    title: 'queryIdCard',
+    label: '身份证',
+    placeholder: '请输入身份证号'
   },
   goToPat () {
     my.navigateTo({ url: '../queryPatCard/queryPatCard' });

@@ -63,7 +63,7 @@ gulp.task('lint', () => {
 gulp.task('compile:js', () => {
   return gulp.src(['src/**/*.js'])
     .pipe(plugins.sourcemaps.init())
-    .pipe(plugins.if(isProduction, plugins.uglify(), plugins.sourcemaps.write('.')))
+    // .pipe(plugins.if(isProduction, plugins.uglify(), plugins.sourcemaps.write('.')))
     .pipe(gulp.dest('dist'))
 })
 
