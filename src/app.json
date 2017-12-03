@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/todos/todos",    
-    "pages/add-todo/add-todo"
+    "pages/queryIdCard/queryIdCard",
+    "pages/queryPatCard/queryPatCard"
   ],
   "window": {
     "defaultTitle": "Todo App"

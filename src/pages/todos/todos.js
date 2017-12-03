@@ -26,4 +26,7 @@ Page({
   addTodo() {
     my.navigateTo({ url: '../add-todo/add-todo' });
   },
+  gotoPage1() {
+    my.navigateTo({ url: '../page1/page1' });
+  },
 });
