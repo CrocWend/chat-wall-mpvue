@@ -20,12 +20,12 @@ App({
               resolve(this.userInfo);
             },
             fail: () => {
-              reject({});
+              reject(new Error("something bad happened"));
             },
           });
         },
         fail: () => {
-          reject({});
+          reject(new Error("something bad happened"));
         },
       });
     });

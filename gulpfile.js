@@ -1,71 +1,208 @@
-// 在gulpfile中先载入gulp包
-var gulp = require('gulp');
-// 使用$引用以gulp开头的模块
-var $ = require('gulp-load-plugins')();
+const fs = require('fs')
+const path = require('path')
 
-// 定义一个对象保存路径
-var path = {
-    srcPath: 'src/',
-    devPath: 'alipay/',
-    // prdPath: 'dist/'
-};
+const gulp = require('gulp')
+const gulpLoadPlugins = require('gulp-load-plugins')
+const del = require('del')
+const runSequence = require('run-sequence')
+const inquirer = require('inquirer')
+const generatePage = require('generate-weapp-page')
 
-// 拷贝 axml文件
-gulp.task('axml', function () {
-    gulp.src(path.srcPath + '**/*.axml')
-        .pipe($.plumber())
-        .pipe(gulp.dest(path.devPath))
-});
+// load all gulp plugins
+const plugins = gulpLoadPlugins()
+const env = process.env.NODE_ENV || 'development'
+const isProduction = () => env === 'production'
 
-// 拷贝 js文件
-gulp.task('js', function () {
-    gulp.src(path.srcPath + '**/*.js')
-        .pipe($.plumber())
-        .pipe(gulp.dest(path.devPath))
-});
+// utils functions
+function generateFile (options) {
+  const files = generatePage({
+    root: path.resolve(__dirname, './src/pages/'),
+    name: options.pageName,
+    less: options.styleType === 'less',
+    scss: options.styleType === 'scss',
+    css: options.styleType === 'css',
+    json: options.needConfig
+  })
+  files.forEach && files.forEach(file => plugins.util.log('[generate]', file))
+  return files
+}
 
-// 拷贝 json文件
-gulp.task('json', function () {
-    gulp.src(path.srcPath + '**/*.json')
-        .pipe($.plumber())
-        .pipe(gulp.dest(path.devPath))
-});
+function generateJson (options) {
+  const filename = path.resolve(__dirname, 'src/app.json')
+  const now = fs.readFileSync(filename, 'utf8')
+  const temp = now.split('\n    // Dont remove this comment')
+  if (temp.length !== 2) {
+    return plugins.util.log('[generate]', 'Append json failed')
+  }
+  const result = `${temp[0].trim()},
+    "pages/${options.pageName}/${options.pageName}"
+    // Dont remove this comment
+  ${temp[1].trim()}
+`
+  fs.writeFileSync(filename, result)
+}
 
-// 编译 拷贝sass文件
-gulp.task('sass', function () {
-    gulp.src(path.srcPath + '**/*.scss')
-        .pipe($.plumber())
-        .pipe($.sass())
-        .pipe($.px2rpx({
-            screenWidth: 750, // 设计稿屏幕, 默认750
-            wxappScreenWidth: 750, // 微信小程序屏幕, 默认750
-            remPrecision: 6 // 小数精度, 默认6
-        }))
-        .pipe($.rename(function (path) {
-            path.extname = ".acss"
-          }))
-        .pipe(gulp.dest(path.devPath))
+/**
+ * Clean distribution directory
+ */
+gulp.task('clean', del.bind(null, ['dist/*']))
+
+/**
+ * Lint source code
+ */
+gulp.task('lint', () => {
+  return gulp.src(['*.{js,json}', '**/*.{js,json}', '!node_modules/**', '!dist/**', '!**/bluebird.js'])
+    .pipe(plugins.eslint({ fix: true }))
+    .pipe(plugins.eslint.format('node_modules/eslint-friendly-formatter'))
+    .pipe(plugins.eslint.failAfterError())
 })
 
-// 拷贝 非scss文件
-gulp.task('other', function () {
-    gulp.src(path.srcPath + '**/!(*.scss)')
-        .pipe($.plumber())
-        .pipe(gulp.dest(path.devPath))
-});
+/**
+ * Compile js source to distribution directory
+ */
+gulp.task('compile:js', () => {
+  return gulp.src(['src/**/*.js'])
+    .pipe(plugins.sourcemaps.init())
+    .pipe(plugins.if(isProduction, plugins.uglify(), plugins.sourcemaps.write('.')))
+    .pipe(gulp.dest('dist'))
+})
 
+/**
+ * Compile xml source to distribution directory
+ */
+gulp.task('compile:xml', () => {
+  return gulp.src(['src/**/*.xml'])
+    .pipe(plugins.sourcemaps.init())
+    .pipe(plugins.if(isProduction, plugins.htmlmin({
+      collapseWhitespace: true,
+      // collapseBooleanAttributes: true,
+      // removeAttributeQuotes: true,
+      caseSensitive: true,
+      keepClosingSlash: true, // xml
+      removeComments: true,
+      removeEmptyAttributes: true,
+      removeScriptTypeAttributes: true,
+      removeStyleLinkTypeAttributes: true
+    })))
+    .pipe(plugins.rename({ extname: '.axml' }))
+    .pipe(plugins.if(!isProduction, plugins.sourcemaps.write('.')))
+    .pipe(gulp.dest('dist'))
+})
 
-gulp.task('build', ['other', 'sass']);
+/**
+ * Compile less source to distribution directory
+ */
+gulp.task('compile:scss', () => {
+  return gulp.src(['src/**/*.scss'])
+    .pipe(plugins.sourcemaps.init())
+    .pipe(plugins.sass())
+    .pipe(plugins.if(isProduction, plugins.cssnano({ compatibility: '*' })))
+    .pipe(plugins.rename({ extname: '.acss' }))
+    .pipe(plugins.if(!isProduction, plugins.sourcemaps.write('.')))
+    .pipe(gulp.dest('dist'))
+})
 
-gulp.task('clean', function () {
-    gulp.src([path.devPath])
-        .pipe($.clean());
-});
+/**
+ * Compile json source to distribution directory
+ */
+gulp.task('compile:json', () => {
+  return gulp.src(['src/**/*.json'])
+    .pipe(plugins.sourcemaps.init())
+    .pipe(plugins.jsonminify())
+    .pipe(plugins.if(!isProduction, plugins.sourcemaps.write('.')))
+    .pipe(gulp.dest('dist'))
+})
 
-gulp.task('serve', ['build'], function () {
-    gulp.watch(path.srcPath + '**/*.scss', ['sass']);
-    gulp.watch(path.srcPath + '**/*.axml', ['axml']);
-    gulp.watch(path.srcPath + '**/*.js', ['js']);
-    gulp.watch(path.srcPath + '**/*.json', ['json']);
-    gulp.watch(path.srcPath + '**/*.scss', ['js']);
-});
+/**
+ * Compile img source to distribution directory
+ */
+gulp.task('compile:img', () => {
+  return gulp.src(['src/**/*.{jpg,jpeg,png,gif}'])
+    .pipe(plugins.imagemin())
+    .pipe(gulp.dest('dist'))
+})
+
+/**
+ * Compile source to distribution directory
+ */
+gulp.task('compile', ['clean'], next => {
+  runSequence([
+    'compile:js',
+    'compile:xml',
+    'compile:scss',
+    'compile:json',
+    'compile:img'
+  ], next)
+})
+
+/**
+ * Copy extras to distribution directory
+ */
+gulp.task('extras', [], () => {
+  return gulp.src([
+    'src/**/*.*',
+    '!src/**/*.js',
+    '!src/**/*.xml',
+    '!src/**/*.scss',
+    '!src/**/*.json',
+    '!src/**/*.{jpe?g,png,gif}'
+  ])
+  .pipe(gulp.dest('dist'))
+})
+
+/**
+ * Build
+ */
+// gulp.task('build', ['lint'], next => runSequence(['compile', 'extras'], next))
+gulp.task('build', next => runSequence(['compile', 'extras'], next))
+
+/**
+ * Watch source change
+ */
+gulp.task('watch', ['build'], () => {
+  gulp.watch('src/**/*.js', ['compile:js'])
+  gulp.watch('src/**/*.xml', ['compile:xml'])
+  gulp.watch('src/**/*.scss', ['compile:scss'])
+  gulp.watch('src/**/*.json', ['compile:json'])
+  gulp.watch('src/**/*.{jpe?g,png,gif}', ['compile:img'])
+})
+
+/**
+ * Generate new page
+ */
+gulp.task('generate', next => {
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'pageName',
+      message: 'Input the page name',
+      default: 'index'
+    },
+    {
+      type: 'confirm',
+      name: 'needConfig',
+      message: 'Do you need a configuration file',
+      default: false
+    },
+    {
+      type: 'list',
+      name: 'styleType',
+      message: 'Select a style framework',
+      // choices: ['less', 'scss', 'css'],
+      choices: ['scss'],
+      default: 'scss'
+    }
+  ])
+  .then(options => {
+    const res = generateFile(options)
+    if (res) generateJson(options)
+  })
+  .catch(err => {
+    throw new plugins.util.PluginError('generate', err)
+  })
+})
+
+/**
+ * Default task
+ */
+gulp.task('default', ['watch'])
