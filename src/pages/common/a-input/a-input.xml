@@ -1,5 +1,0 @@
-<template name="a-input">
-  <view class="a-input">
-    <input type="idcard" placeholder="{{ placeholder }}"/>
-  </view>
-</template>

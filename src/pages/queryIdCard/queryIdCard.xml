@@ -1,7 +1,0 @@
-<import src="../common/a-input/a-input.axml"/>
-<view class="container">
-  <view class="query-container">
-    <text class="title" onTap="goToPat">{{ label }}</text>
-    <template is="a-input" data="{{ placeholder }}"></template>
-  </view>
-</view>

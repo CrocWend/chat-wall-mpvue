@@ -1,9 +1,31 @@
 {
   "pages": [
-    "pages/queryIdCard/queryIdCard",
-    "pages/queryPatCard/queryPatCard"
+    "pages/find/find"
   ],
   "window": {
     "defaultTitle": "Todo App"
+  },
+  "tabBar": {
+    "textColor": "#dddddd",
+    "selectedColor": "#49a9ee",
+    "backgroundColor": "#ffffff",
+    "items": [
+      {
+        "pagePath": "pages/find/find",
+        "name": "发现音乐"
+      },
+      {
+        "pagePath": "pages/music/music",
+        "name": "我的音乐"
+      },
+      {
+        "pagePath": "pages/friend/friend",
+        "name": "朋友"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "name": "账号"
+      }
+    ]
   }
 }
