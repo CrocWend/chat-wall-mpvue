@@ -1,11 +1,8 @@
+@import './pages/style/variable';
 page {
   flex: 1;
   display: flex;
   .test {
     width: 101px;
   }
-  // .query-container {
-  //   display: flex;
-  //   flex-direction: row;
-  // }
 }

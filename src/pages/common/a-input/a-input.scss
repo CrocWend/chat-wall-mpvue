@@ -1,5 +1,6 @@
+@import '../../style/variable';
 .query-container {
   display: flex;
   flex-direction: row;
-  
+  color: $bgcolor-green;  
 }
