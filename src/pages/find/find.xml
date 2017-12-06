@@ -1,18 +1,4 @@
-<import src="../../components/zanUI/tab/index.axml" />
+<import src="../../components/navbar/navbar.axml" />
 <view class="container">
-  <view style="margin: 20px 0">
-    <template is="zan-tab" data="{{tab: tab3, componentId: 'tab3'}}"></template>
-    <swiper
-      indicator-dots="true"
-      autoplay="ture"
-      interval="1500"
-      circular="true"
-    >
-      <block a:for="{{slider}}">
-        <swiper-item>
-          <image class="swiper-image" src="{{item.picUrl}}"></image>
-        </swiper-item>
-      </block>
-    </swiper>
-  </view>
+  <template is="navbar"></template>
 </view>
