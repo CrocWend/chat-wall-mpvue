@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "gulp lint",
     "watch": "gulp watch",
-    "generate": "gulp generate",
+    "new": "gulp new",
     "build": "cross-env NODE_ENV=production gulp build"
   },
   "repository": {

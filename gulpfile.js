@@ -28,6 +28,7 @@ function generateFile (options) {
 }
 
 function generateJson (options) {
+  // 获取app.json的绝对路径
   const filename = path.resolve(__dirname, 'src/app.json')
   const now = fs.readFileSync(filename, 'utf8')
   const temp = now.split('\n    // Dont remove this comment')
@@ -170,7 +171,7 @@ gulp.task('watch', ['build'], () => {
 /**
  * Generate new page
  */
-gulp.task('generate', next => {
+gulp.task('new', next => {
   inquirer.prompt([
     {
       type: 'input',
