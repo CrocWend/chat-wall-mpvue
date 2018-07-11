@@ -4,6 +4,11 @@ import sinon from 'sinon';
 
 import Button from '../';
 
+// shallow方法就是对官方的Shallow Rendering的封装
+// shallow方法只会渲染出组件的第一层DOM结构，其嵌套的子组件不会被渲染出来
+
+// mount方法则会将React组件渲染为真实的DOM节点
+
 describe('Button test', () => {
   it('create', () => {
     const w = shallow(

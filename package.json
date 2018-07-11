@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cd site && node run.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -71,5 +71,17 @@
     "raf": "^3.4.0",
     "react-click-outside": "^3.0.0",
     "throttle-debounce": "^1.0.1"
+  },
+  "jest": {
+    "testRegex": "(/jest/.+\\.(js|jsx)$)|_test.jsx?$",
+    "testPathIgnorePatterns": [
+      "<rootDir>/tests",
+      "<rootDir>/dist"
+    ],
+    "moduleNameMapper": {
+      "\\.(png|eot|svg|ttf|woff|woff2)(\\?.+)?$": "<rootDir>/tests/jest/mock.js",
+      "\\.(css|scss)$": "identity-obj-proxy"
+    },
+    "setupTestFrameworkScriptFile": "<rootDir>/tests/jest/config.js"
   }
 }
