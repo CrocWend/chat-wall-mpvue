@@ -64,7 +64,6 @@ export default class App extends React.Component {
   getPage() {
     // ?: 不捕获分组
     const routes = location.hash.match(/(?:\/(.+))?\/(.+)/);
-    console.log(routes)
     if (routes) {
       if (locales.hasOwnProperty(routes[1])) {
         this.setState({ locale: routes[1] }, () => {
@@ -82,14 +81,15 @@ export default class App extends React.Component {
     this.setState({ page: this.getPage() }, fn);
   }
 
+  // 获取组件
   getComponent(page) {
     this.components = this.components || Object.assign(Object.values(pages.components).reduce((a, b) => {
       return Object.assign(a, b);
     }, {}), pages.documents);
-
     const result = this.components[page];
-
+    
     if (result) {
+      // React.createElement(tagType/reactClass, props, children)
       return React.createElement(result.default, {
         locale: {
           show: this.getLocale('markdown.show'),

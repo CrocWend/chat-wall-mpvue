@@ -4,7 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 
-new WebpackDevServer(webpack({
+let webpackConfig = webpack({
   devtool: 'eval',
   entry: [
     'webpack-dev-server/client?http://localhost:3000',
@@ -43,24 +43,26 @@ new WebpackDevServer(webpack({
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2)(\?.+)?$/,
-        loader : 'file-loader'
+        loader: 'file-loader'
       },
       {
         test: /\.(jpe?g|png|gif)(\?.+)?$/,
-        loader : 'url-loader'
+        loader: 'url-loader'
       },
       {
         test: /\.md$/,
-        loader : 'raw-loader'
+        loader: 'raw-loader'
       }
     ]
   }
-}), {
+})
+let app = new WebpackDevServer(webpackConfig, {
   publicPath: '/',
   hot: true,
   historyApiFallback: true,
   stats: { colors: true }
-}).listen(3000, 'localhost', error => {
+})
+app.listen(3000, 'localhost', error => {
   if (error) {
     throw error;
   }
