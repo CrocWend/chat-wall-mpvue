@@ -1,9 +1,8 @@
 <template>
 
-  <div v-if="userInfo.nickName" class="container-home" @click="clickHandle('test click', $event)">
+  <!-- <div v-if="userInfo.nickName" class="container">
     <div class="navigator" >
     </div>
-
     <div class="userinfo" @click="bindViewTap">
       <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" background-size="cover" />
       <div class="userinfo-nickname">
@@ -11,53 +10,100 @@
       </div>
     </div>
 
-    <div class="usermotto">
+    <!-- <div class="usermotto">
       <div class="user-motto">
         <card :text="motto"></card>
       </div>
-    </div>
+    </div> -->
 
-    <form class="form-container">
+    <!-- <form class="form-container">
       <input type="text" class="form-control" v-model="motto" placeholder="v-model" />
       <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy" />
     </form>
-    <a href="/pages/counter/main" class="counter">去往Vuex示例页面</a>
-  </div>
-  <div v-else class="container-auth">
-    <div v-if="canIUse">
-      <div class='content'>
-          <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540358325558&di=91230b294c2d214557c552c438cca869&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Fa686c9177f3e6709bd004ed630c79f3df8dc5592.jpg"/>
-          <div>申请获取以下权限</div>
-          <div>获得你的公开信息(昵称，头像等)</div>
-      </div>
-      <button class="weui-btn" type="primary" v-if="canIUse" open-type="getUserInfo" @getuserinfo="bindGetUserInfo">授权登录</button>
-
+    <a href="/pages/counter/main" class="counter">去往Vuex示例页面</a> 
+    <div>
+      <ul class="container wish-list">
+        <li v-for="(wish, index) in wishList" :class="{ red: aa }" :key="index" class="wish-item">
+          <card :text="(index + 1) + ' . ' + wish"></card>
+        </li>
+      </ul>
     </div>
-    <div v-else>请升级微信版本</div>
+    
+
+    <div class="footer weui-footer_fixed-bottom">
+      <div class="footer-button">
+        <button class="weui-btn mini-btn" size="mini" type="default" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">签到</button>
+        <button class="weui-btn mini-btn" size="mini" type="default">发弹幕</button>
+        <button class="weui-btn mini-btn" size="mini" type="default">按钮</button>
+      </div>
+
+      <div class="wish-box">
+        <form>
+          <div class="wish-form">
+            <div class="input-left">
+              <a href="javascript:;" class="btn-only-icon" id="btn-close-wish"><icon size="23" type="circle"></icon> </a>
+            </div>
+            <div class="input-box">
+              <textarea class="weui_textarea" id="ipt-wish" placeholder="颜值高的和祝福多的都有机会中奖" rows="1"></textarea>
+            </div>
+            <div class="input-right">
+              <button type="submit" class="btn-only-icon" id="btn-send-wish"><icon size="23" type="success"></icon></button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
+  <div v-else>加载中。。。</div> -->
+
+  <view class="indexContainer">
+    <chat></chat>
+    <chatInput></chatInput>
+  </view>
 
 </template>
 
 <script>
+
+// 引入组件
 import card from '@/components/card';
+import chat from '@/components/chat'
+import chatInput from '@/components/input'
+
+import utils from '@/utils/index';
+import api from '@/config/api'
+import { mapState, mapMutations } from "vuex";
 
 export default {
   config: {
     "enablePullDownRefresh": true,
+    'navigationBarTitleText': 'ChatWall',
+    'navigationBarTextStyle': 'white',
+    'navigationBarBackgroundColor': '#372746'
   },
   data() {
     return {
       motto: 'Hello World',
       userInfo: {},
-      canIUse: wx.canIUse('button.open-type.getUserInfo')
+      wishList: [
+        1,2,3,4,5
+      ],
+      chat: []
     };
   },
 
   components: {
     card,
+    chat,
+    chatInput,
   },
 
   methods: {
+    ...mapMutations(["update"]),
+    delItem: (key) => {
+      let _this = this
+      _this.ref.child(key).remove()
+    },
     bindViewTap() {
       const url = '../logs/main';
       wx.navigateTo({ url });
@@ -95,14 +141,28 @@ export default {
         self.userInfo = e.mp.detail.userInfo
     },
 
+    getPhoneNumber (e) { 
+      console.log(e.detail.errMsg) 
+      console.log(e.detail.iv) 
+      console.log(e.detail.encryptedData) 
+    },
     clickHandle(msg, ev) {
       console.log('clickHandle:', msg, ev);
+    },
+    getIndexData: function () {
+      let that = this;
+      utils.request(api.IndexUrl).then(function (res) {
+        if (res.errno === 0) {
+          console.log(res)
+        }
+      });
     },
   },
 
   created() {
     console.log('index')
     console.log(this.userInfo)
+    console.log(utils)
     // 调用应用实例的方法获取全局数据
     
   },
@@ -110,58 +170,21 @@ export default {
     console.log('mounted', this)
     console.log(this.userInfo)
     this.getUserInfo();
+    // this.getIndexData();
   },
 }
 </script>
 
 <style scoped lang="scss">
-.container-auth {
-  padding: 400rpx 30rpx;
-  img {
-    display: block;
-    width: 300rpx;
-    height: 300rpx;
-    border-radius: 50%;
-    margin: 0 auto;
+  page {
+    height: 100%;
   }
-}
-.container-home {
-  background: pink;
-}
-
-.userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.userinfo-avatar {
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
-}
-
-.userinfo-nickname {
-  color: #aaa;
-}
-
-.usermotto {
-  margin-top: 150px;
-}
-
-.form-control {
-  display: block;
-  padding: 0 12px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
-}
-
-.counter {
-  display: inline-block;
-  margin: 10px auto;
-  padding: 5px 10px;
-  color: blue;
-  border: 1px solid blue;
-}
+  .indexContainer {
+    height: 100%;
+    width: 100%;
+    background-color: #372746;
+    background-repeat: no-repeat;
+    background-image: url("http://static.wx.sunbar.cn/images/group/bg@2x.png");
+    background-size: cover;
+  }
 </style>

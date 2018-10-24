@@ -14,4 +14,7 @@ export default {
 
 <style>
 @import '../static/style/weui.wxss';
+page {
+  height: 100%;
+}
 </style>
