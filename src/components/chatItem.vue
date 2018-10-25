@@ -7,7 +7,7 @@
       <div class="chatContent">
         <div class="deleteBox">
           <div class="userName">{{item.user.nickName}}</div>
-          <div class="delBtn" data-key="item.key" @tap="deleteItem">删除</div>
+          <!-- <div class="delBtn" data-key="item.key" @tap="deleteItem">删除</div> -->
         </div>
         <div class="chatMsg">{{item.message}}</div>
       </div>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+  import utils from '@/utils/utils';
 
   export default {
     data() {

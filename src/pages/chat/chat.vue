@@ -3,12 +3,7 @@
   <!-- <div v-if="userInfo.nickName" class="container">
     <div class="navigator" >
     </div>
-    <div class="userinfo" @click="bindViewTap">
-      <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" background-size="cover" />
-      <div class="userinfo-nickname">
-        <card :text="userInfo.nickName"></card>
-      </div>
-    </div>
+    
 
     <!-- <div class="usermotto">
       <div class="user-motto">
@@ -70,7 +65,8 @@ import card from '@/components/card';
 import chat from '@/components/chat'
 import chatInput from '@/components/input'
 
-import utils from '@/utils/index';
+import utils from '@/utils/utils';
+import socket from '@/utils/socket';
 import api from '@/config/api'
 import { mapState, mapMutations } from "vuex";
 
@@ -84,7 +80,6 @@ export default {
   data() {
     return {
       motto: 'Hello World',
-      userInfo: {},
       wishList: [
         1,2,3,4,5
       ],
@@ -97,9 +92,11 @@ export default {
     chat,
     chatInput,
   },
-
+  computed: {
+    ...mapState(["userInfo"])
+  },
   methods: {
-    ...mapMutations(["update"]),
+    ...mapMutations(["update", "setChat"]),
     delItem: (key) => {
       let _this = this
       _this.ref.child(key).remove()
@@ -107,47 +104,6 @@ export default {
     bindViewTap() {
       const url = '../logs/main';
       wx.navigateTo({ url });
-    },
-    getUserInfo() {
-      // 查看是否授权
-      let self = this;
-      wx.getSetting({
-        success (res){
-          if (res.authSetting['scope.userInfo']) {
-            // 已经授权，可以直接调用 getUserInfo 获取头像昵称 显示不同页面
-            wx.getUserInfo({
-              success: function(res) {
-                console.log(res.userInfo)
-                console.log('已经授权');
-                // self.setData({
-                //   userInfo: res.userInfo
-                // })
-                // 
-                self.userInfo = res.userInfo
-                console.log(self.userInfo)
-              }
-            })
-          }else {
-            // 未授权
-            console.log('未授权')
-            
-          }
-        }
-      })
-    },
-    bindGetUserInfo (e) {
-        console.log(e.mp.detail.userInfo)
-        
-        self.userInfo = e.mp.detail.userInfo
-    },
-
-    getPhoneNumber (e) { 
-      console.log(e.detail.errMsg) 
-      console.log(e.detail.iv) 
-      console.log(e.detail.encryptedData) 
-    },
-    clickHandle(msg, ev) {
-      console.log('clickHandle:', msg, ev);
     },
     getIndexData: function () {
       let that = this;
@@ -168,9 +124,14 @@ export default {
   },
   mounted() {
     console.log('mounted', this)
-    console.log(this.userInfo)
-    this.getUserInfo();
     // this.getIndexData();
+    const SocketTask = socket.getSocket();
+    SocketTask.onMessage((data) => {
+      if(data.data.indexOf("INOROUT") == -1) {
+        let msgData = JSON.parse(data.data)
+        this.setChat(msgData)
+      }
+    })
   },
 }
 </script>
