@@ -127,7 +127,7 @@ export default {
     // this.getIndexData();
     const SocketTask = socket.getSocket();
     SocketTask.onMessage((data) => {
-      if(data.data.indexOf("INOROUT") == -1) {
+      if(data.data.indexOf("CHAT") !== -1) {
         let msgData = JSON.parse(data.data)
         this.setChat(msgData)
       }
@@ -143,9 +143,9 @@ export default {
   .indexContainer {
     height: 100%;
     width: 100%;
-    background-color: #372746;
+    // background-color: #372746;
     background-repeat: no-repeat;
-    background-image: url("http://static.wx.sunbar.cn/images/group/bg@2x.png");
+    // background-image: url("../../images/bg.jpg");
     background-size: cover;
   }
 </style>

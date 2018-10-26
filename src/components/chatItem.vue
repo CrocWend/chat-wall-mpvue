@@ -91,6 +91,7 @@
       border-radius: 8rpx;
       margin-top: 10rpx;
       max-width: 400rpx;
+      word-wrap: break-word;
       background-color: rgba(0,0,0,.3);
     }
   }

@@ -52,7 +52,7 @@
           let msgData = {
             data: JSON.stringify({
               createTime,
-              messageType: "TEXT",
+              messageType: "CHAT",
               message: this.inputValue,
               user: this.userInfo
             })
