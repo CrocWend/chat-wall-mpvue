@@ -1,14 +1,10 @@
+node_modules
+dist*
 .DS_Store
+src/pages/index
+src/pages/todomvc
+src/pages/v-html
+src/pages/v-model
+src/pages/vuex
+src/packageA
 package-lock.json
-node_modules/
-dist/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Editor directories and files
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
