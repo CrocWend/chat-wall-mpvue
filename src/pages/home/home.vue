@@ -146,7 +146,7 @@ export default {
             }
 
             wx.navigateTo({
-              url: '../chat/chat'
+              url: '../chat/main'
             })
           }
         }
