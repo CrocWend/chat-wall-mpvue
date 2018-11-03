@@ -34,7 +34,7 @@ import { mapState, mapActions } from "vuex";
 var app = getApp();
 import Toast from '@/../static/vant/toast/toast'
 import config from '../../config/config';
-import constant from '../../config/constant'
+import { msgPlaceholder } from '../../config/constant'
 import tools from '../../utils/tools'
 import weRequest from '../../utils/request';
 
@@ -47,7 +47,7 @@ export default {
       signMessage: '', // 留言
       isSign: false, // 是否签到
       // 留言占位信息
-      msgPlaceholder: constant.msgPlaceholder[tools.getRandomNum(1, constant.msgPlaceholder.length - 1)],
+      msgPlaceholder: msgPlaceholder[tools.getRandomNum(1, msgPlaceholder.length - 1)],
     }
   },
   computed: {
@@ -113,7 +113,7 @@ export default {
      * 加入群聊
      */
     joinRoom(phone, userInfo) {
-
+      let self = this
       wx.request({
         url: config.apiUrl + '/nh/joinRoom',
         data: {
@@ -131,14 +131,16 @@ export default {
           // 登录成功跳转聊天页面
           if (res.data.result) {
             console.log('设置头像等信息')
-            app.globalData.appInfo = Object.assign(app.globalData.appInfo, userInfo);
+            var appInfo = Object.assign(self.appInfo, userInfo);
+
+            self.update({ appInfo })
 
             try {
               var value = wx.getStorageSync('appInfo')
               if (value) {
                 // 本地存储
                 try {
-                  wx.setStorageSync('appInfo', Object.assign(value, app.globalData.appInfo))
+                  wx.setStorageSync('appInfo', Object.assign(value, appInfo))
                 } catch (e) {}
               }
             } catch (e) {
