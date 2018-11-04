@@ -14,7 +14,7 @@ import { inputPlaceHolder } from '../../config/constant'
 import tools from '../../utils/tools'
 import weRequest from '../../utils/request';
 
-import ChatItem from '../../components/chat-item'
+import ChatItem from '../../components/chat-page/chat-item'
 export default {
   mpType: 'page',
   data() {
@@ -28,7 +28,8 @@ export default {
     }
   },
   components: {
-    chatItem: ChatItem
+    ChatItem
+
   },
   onLoad() {
     console.log(this.chatItems)

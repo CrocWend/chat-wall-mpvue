@@ -1,0 +1,108 @@
+<template>
+  <div class="chat-word" :style="{'flex-direction': item.isMy?'row-reverse':'row','margin-bottom':(index===length-1?'150rpx':'20rpx')}">
+    <!-- 头像 -->
+    <img class="head-url" :src="item.headUrl" />
+    <!-- 消息的icon -->
+    <img v-if="item.type==='text'||item.type==='voice'" class="chat-list-arrow-style" :src="chatListArrowPic" />
+    <!-- 发送的文本 -->
+    <div v-if="item.type==='text'" :class="item.isMy ? 'isMyWordStyle': 'isOtherWordStyle'" @click="chatTextItemClickEvent" data-index="item.index">{{content}}</div>
+    <!-- 发送的图片 -->
+    <img v-if="item.type==='image'" class="chat-list-pic-style"
+  :src="item.content" mode="aspectFill" @click="imageClickEvent" data-url="item.content"
+    />
+    <!-- 语音 -->
+    <div v-if="item.type==='voice'" :style="{'width': (item.voiceDuration-1)*0.6+10 +'%',
+    'display': 'flex',
+    'justify-content': item.isMy?'flex-end':'flex-start',
+    'margin-bottom':(item.index===item.length-1?'150rpx':'20rpx')}" :class="item.isMy ? 'isMyWordStyle': 'isOtherWordStyle'" @click="chatVoiceItemClickEvent" data-voice-path="item.content" data-voice-duration="item.voiceDuration" data-is-my="item.isMy" data-index="item.index">
+      <voice-item></voice-item>
+    </div>
+    <div v-if="item.type==='voice'" class="voice-duration-style">{{item.voiceDuration}}</div>
+    <!-- 发送状态 -->
+    <div v-if="isMy">
+      <send-status></send-status>
+    </div>
+  </div>
+</template>
+<script>
+import VoiceItem from './voice-item'
+import SendStatus from './send-status'
+export default {
+  props: {
+    item: Object,
+    length: Number,
+    index: Number,
+  },
+  components: {
+    VoiceItem,
+    SendStatus
+  },
+  computed: {
+    chatListArrowPic() {
+      return `../../../static/image/chat/popu_${this.isMy?'blue':'white'}.png`
+    }
+  }
+}
+
+</script>
+<style lang="scss" scoped>
+.chat-word {
+  width: 100%;
+  display: flex;
+  margin-top: 20rpx;
+
+  .head-url {
+    width: 70rpx;
+    height: 70rpx;
+    border-radius: 50%;
+    margin-left: 15rpx;
+    margin-right: 15rpx;
+  }
+}
+
+.isMyWordStyle,
+.isOtherWordStyle {
+  border-radius: 10rpx;
+  padding: 20rpx;
+  font-size: 30rpx;
+  max-width: 60%;
+}
+
+.isMyWordStyle {
+  background-color: #8fcbf7;
+  color: #213d52;
+  margin-right: -1rpx;
+  margin-left: 14rpx;
+  word-wrap: break-word;
+}
+
+.isOtherWordStyle {
+  background-color: white;
+  color: #333333;
+  margin-right: 14rpx;
+  margin-left: -1rpx;
+  word-wrap: break-word;
+}
+
+.chat-list-pic-style {
+  border-radius: 10rpx;
+  margin-left: 5rpx;
+  width: 150rpx;
+  height: 280rpx;
+}
+
+.voice-duration-style {
+  color: #666666;
+  font-size: 26rpx;
+  align-self: center;
+  margin-top: 3rpx;
+  margin-left: 5rpx;
+}
+
+.chat-list-arrow-style {
+  width: 11rpx;
+  height: 20rpx;
+  margin-top: 25rpx
+}
+
+</style>
