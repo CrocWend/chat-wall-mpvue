@@ -1,4 +1,4 @@
-export default class Toast{
+export default class Toast {
     static show(icon, title, duration) {
         if (icon === 'loading') {
             wx.showToast({

@@ -1,7 +1,6 @@
 {
   "navigationBarTitleText": "首页授权",
-  "usingComponents":
-  {
+  "usingComponents": {
     "van-button": "/static/vant/button/index",
     "van-toast": "/static/vant/toast/index",
     "van-field": "/static/vant/field/index"

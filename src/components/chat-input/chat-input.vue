@@ -1,39 +1,60 @@
 <template>
   <div class="chat-input">
     <div class="input-text-voice-super">
-      <img v-if="showVoicePart" class="extra-btn-style" @click="test" :src="keyboardOrVoicePic"/>
-      <chat-voice v-if="inputStatus==='voice'" :voiceObj="inputObj.voiceObj" :canUsePress="inputObj.canUsePress" @longClickVoiceBtn="long$click$voice$btn" @sendVoiceMoveEvent="send$voice$move$event" @sendVoiceMoveEndEvent="send$voice$move$end$event"></chat-voice>
-      <input v-if="inputStatus==='text'" class="chat-input-style" :style="{'margin-left':showVoicePart?0:'16rpx'}" maxlength="500" confirm-type="send" :value="textMessage" confirm-hold :placeholder="inputPlaceHolder" placeholder-class="input-placeholder-class" />
+      <img v-if="showVoicePart"
+           class="extra-btn-style"
+           @click="test"
+           :src="keyboardOrVoicePic" />
+      <chat-voice v-if="inputStatus==='voice'"
+                  :voiceObj="inputObj.voiceObj"
+                  :canUsePress="inputObj.canUsePress"
+                  @longClickVoiceBtn="long$click$voice$btn"
+                  @sendVoiceMoveEvent="send$voice$move$event"
+                  @sendVoiceMoveEndEvent="send$voice$move$end$event"></chat-voice>
+      <input v-if="inputStatus==='text'"
+             class="chat-input-style"
+             :style="{'margin-left':showVoicePart?0:'16rpx'}"
+             maxlength="500"
+             confirm-type="send"
+             :value="textMessage"
+             confirm-hold
+             :placeholder="inputPlaceHolder"
+             placeholder-class="input-placeholder-class" />
       <!-- 右侧按钮 -->
       <view @click="chatInputExtraClickEvent">
-        <img class="extra-btn-style" src="../../../static/image/chat/extra.png"  />
+        <img class="extra-btn-style"
+             src="../../../static/image/chat/extra.png" />
       </view>
     </div>
     <!-- 扩展 -->
-    <view v-if="showExtraPart" class="list-divide-line">235235</view>
-    <extra-part @extraButtonClick="chatInputExtraItemClickEvent" v-if="showExtraPart" :chatInputExtraArr="inputObj.extraObj.chatInputExtraArr"></extra-part>
+    <view v-if="showExtraPart"
+          class="list-divide-line">235235</view>
+    <extra-part @extraButtonClick="chatInputExtraItemClickEvent"
+                v-if="showExtraPart"
+                :chatInputExtraArr="inputObj.extraObj.chatInputExtraArr"></extra-part>
   </div>
 </template>
 <script>
 import * as chatInputTools from "@/components/chat-input/chat-input-tools";
-import { inputPlaceHolder } from '@/config/constant'
-import tools from '@/utils/tools'
+import { inputPlaceHolder } from "@/config/constant";
+import tools from "@/utils/tools";
 import IMOperator from "@/pages/chat/im-operator";
 
-import ExtraPart from '@/components/chat-input/extra-part'
-import ChatVoice from '@/components/chat-input/chat-voice'
+import ExtraPart from "@/components/chat-input/extra-part";
+import ChatVoice from "@/components/chat-input/chat-voice";
 
 export default {
   data() {
     return {
-      textMessage: '',
+      textMessage: "",
       chatItems: [],
       showVoicePart: true,
       showExtraPart: false,
-      inputStatus: 'text',
+      inputStatus: "text",
       inputObj: {},
-      inputPlaceHolder: inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)],
-    }
+      inputPlaceHolder:
+        inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]
+    };
   },
   components: {
     ExtraPart,
@@ -44,12 +65,13 @@ export default {
   },
   computed: {
     keyboardOrVoicePic() {
-      return `../../../static/image/chat/voice/${this.inputObj.inputStatus==='voice'?'keyboard':'voice'}.png`
+      return `../../../static/image/chat/voice/${
+        this.inputObj.inputStatus === "voice" ? "keyboard" : "voice"
+      }.png`;
     }
   },
   methods: {
-    test() {
-    },
+    test() {},
     initData() {
       let self = this;
       let systemInfo = wx.getSystemInfoSync();
@@ -58,41 +80,48 @@ export default {
         minVoiceTime: 1,
         maxVoiceTime: 60,
         startTimeDown: 56,
-        format: 'mp3', //aac/mp3
-        sendButtonBgColor: 'mediumseagreen',
-        sendButtonTextColor: 'white',
-        extraArr: [{
-          picName: 'choose_picture',
-          description: '照片'
-        }, {
-          picName: 'take_photos',
-          description: '拍摄'
-        }, {
-          picName: 'close_chat',
-          description: '自定义功能'
-        }],
+        format: "mp3", //aac/mp3
+        sendButtonBgColor: "mediumseagreen",
+        sendButtonTextColor: "white",
+        extraArr: [
+          {
+            picName: "choose_picture",
+            description: "照片"
+          },
+          {
+            picName: "take_photos",
+            description: "拍摄"
+          },
+          {
+            picName: "close_chat",
+            description: "自定义功能"
+          }
+        ]
         // tabbarHeigth: 48
       });
-
 
       self.textButton();
       self.extraButton();
       self.voiceButton();
     },
     textButton() {
-      chatInputTools.setTextMessageListener((e) => {
+      chatInputTools.setTextMessageListener(e => {
         let content = e.detail.value;
-        this.$emit('sendMsg', { type: IMOperator.TextType, content });
+        this.$emit("sendMsg", { type: IMOperator.TextType, content });
       });
     },
     voiceButton() {
       chatInputTools.recordVoiceListener((res, duration) => {
         let tempFilePath = res.tempFilePath;
-        this.$emit('sendMsg', { type: IMOperator.VoiceType, content: tempFilePath, duration });
+        this.$emit("sendMsg", {
+          type: IMOperator.VoiceType,
+          content: tempFilePath,
+          duration
+        });
       });
-      chatInputTools.setVoiceRecordStatusListener((status) => {
-        this.$emit('stopAllVoice')
-      })
+      chatInputTools.setVoiceRecordStatusListener(status => {
+        this.$emit("stopAllVoice");
+      });
     },
 
     //模拟上传文件，注意这里的cbOk回调函数传入的参数应该是上传文件成功时返回的文件url，这里因为模拟，我直接用的savedFilePath
@@ -104,7 +133,7 @@ export default {
     },
     extraButton() {
       let self = this;
-      chatInputTools.clickExtraListener((e) => {
+      chatInputTools.clickExtraListener(e => {
         let chooseIndex = parseInt(e.currentTarget.dataset.index);
         if (chooseIndex === 2) {
           self.myFun();
@@ -112,35 +141,36 @@ export default {
         }
         wx.chooseImage({
           count: 1, // 默认9
-          sizeType: ['compressed'],
-          sourceType: chooseIndex === 0 ? ['album'] : ['camera'],
-          success: (res) => {
-            this.$emit('sendMsg', { type: IMOperator.ImageType, content: res.tempFilePaths[0] });
+          sizeType: ["compressed"],
+          sourceType: chooseIndex === 0 ? ["album"] : ["camera"],
+          success: res => {
+            this.$emit("sendMsg", {
+              type: IMOperator.ImageType,
+              content: res.tempFilePaths[0]
+            });
           }
         });
-
       });
-      chatInputTools.setExtraButtonClickListener((dismiss) => {
-        console
-.log('Extra弹窗是否消失', dismiss);
+      chatInputTools.setExtraButtonClickListener(dismiss => {
+        console.log("Extra弹窗是否消失", dismiss);
         this.showExtraPart = dismiss;
-      })
+      });
     },
     /**
      * 自定义事件
      */
     myFun() {
       wx.showModal({
-        title: '小贴士',
-        content: '演示更新会话状态',
-        confirmText: '确认',
+        title: "小贴士",
+        content: "演示更新会话状态",
+        confirmText: "确认",
         showCancel: true,
-        success: (res) => {
+        success: res => {
           if (res.confirm) {
-            this.$emit('sendMsg', { type: IMOperator.CustomType });
+            this.$emit("sendMsg", { type: IMOperator.CustomType });
           }
         }
-      })
+      });
     },
 
     resetInputStatus() {
@@ -149,21 +179,21 @@ export default {
 
     sendMsg({ content, itemIndex, success }) {
       // 发送消息后修改placeholder
-      this.inputPlaceHolder = inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)],
-      this.$emit('onSimulateSendMsg', {
-        content,
-        success: (msg) => {
-          this.UI.updateViewWhenSendSuccess(msg, itemIndex);
-          success && success(msg);
-        },
-        fail: () => {
-          this.UI.updateViewWhenSendFailed(itemIndex);
-        }
-      })
-    },
+      (this.inputPlaceHolder =
+        inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]),
+        this.$emit("onSimulateSendMsg", {
+          content,
+          success: msg => {
+            this.UI.updateViewWhenSendSuccess(msg, itemIndex);
+            success && success(msg);
+          },
+          fail: () => {
+            this.UI.updateViewWhenSendFailed(itemIndex);
+          }
+        });
+    }
   }
-}
-
+};
 </script>
 <style lang="scss" scoped>
 .chat-input {
@@ -211,7 +241,7 @@ input {
   margin-bottom: 13rpx;
   padding: 10rpx;
   min-height: 51rpx;
-  background-color: #EFEFEF;
+  background-color: #efefef;
   font-size: 28rpx;
 }
 
@@ -227,5 +257,4 @@ input {
   margin: 0 10rpx;
   border-radius: 10rpx;
 }
-
 </style>

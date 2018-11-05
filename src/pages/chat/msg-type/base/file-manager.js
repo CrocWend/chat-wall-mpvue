@@ -87,7 +87,7 @@ export default class FileManager {
     });
   }
 
-  resend({}) {
+  resend({ }) {
     //文件的重发在商业版中已经实现，开源版中需要你自行实现
   }
 }

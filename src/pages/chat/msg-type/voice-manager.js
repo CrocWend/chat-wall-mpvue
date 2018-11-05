@@ -55,7 +55,7 @@ export default class VoiceManager extends FileManager {
       this._startPlayVoice(dataset);
       let localPath = dataset.voicePath; //优先读取本地路径，可能不存在此文件
 
-      this._myPlayVoice(localPath, dataset, function() {
+      this._myPlayVoice(localPath, dataset, function () {
         console.log('成功读取了本地语音');
       }, () => {
         console.log('读取本地语音文件失败，一般情况下是本地没有该文件，需要从服务器下载');

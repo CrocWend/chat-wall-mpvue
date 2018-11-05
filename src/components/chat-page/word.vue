@@ -1,23 +1,41 @@
 <template>
-  <div class="chat-word" :style="{'flex-direction': item.isMy?'row-reverse':'row','margin-bottom':(index===length-1?'150rpx':'20rpx')}">
+  <div class="chat-word"
+       :style="{'flex-direction': item.isMy?'row-reverse':'row','margin-bottom':(index===length-1?'150rpx':'20rpx')}">
     <!-- 头像 -->
-    <img class="head-url" :src="item.headUrl" />
+    <img class="head-url"
+         :src="item.headUrl" />
     <!-- 消息的icon -->
-    <img v-if="item.type==='text'||item.type==='voice'" class="chat-list-arrow-style" :src="chatListArrowPic" />
+    <img v-if="item.type==='text'||item.type==='voice'"
+         class="chat-list-arrow-style"
+         :src="chatListArrowPic" />
     <!-- 发送的文本 -->
-    <div v-if="item.type==='text'" :class="item.isMy ? 'isMyWordStyle': 'isOtherWordStyle'" @click="chatTextItemClickEvent" data-index="item.index">{{content}}</div>
+    <div v-if="item.type==='text'"
+         :class="item.isMy ? 'isMyWordStyle': 'isOtherWordStyle'"
+         @click="chatTextItemClickEvent"
+         data-index="item.index">{{content}}</div>
     <!-- 发送的图片 -->
-    <img v-if="item.type==='image'" class="chat-list-pic-style"
-  :src="item.content" mode="aspectFill" @click="imageClickEvent" data-url="item.content"
-    />
+    <img v-if="item.type==='image'"
+         class="chat-list-pic-style"
+         :src="item.content"
+         mode="aspectFill"
+         @click="imageClickEvent"
+         data-url="item.content" />
     <!-- 语音 -->
-    <div v-if="item.type==='voice'" :style="{'width': (item.voiceDuration-1)*0.6+10 +'%',
+    <div v-if="item.type==='voice'"
+         :style="{'width': (item.voiceDuration-1)*0.6+10 +'%',
     'display': 'flex',
     'justify-content': item.isMy?'flex-end':'flex-start',
-    'margin-bottom':(item.index===item.length-1?'150rpx':'20rpx')}" :class="item.isMy ? 'isMyWordStyle': 'isOtherWordStyle'" @click="chatVoiceItemClickEvent" data-voice-path="item.content" data-voice-duration="item.voiceDuration" data-is-my="item.isMy" data-index="item.index">
+    'margin-bottom':(item.index===item.length-1?'150rpx':'20rpx')}"
+         :class="item.isMy ? 'isMyWordStyle': 'isOtherWordStyle'"
+         @click="chatVoiceItemClickEvent"
+         data-voice-path="item.content"
+         data-voice-duration="item.voiceDuration"
+         data-is-my="item.isMy"
+         data-index="item.index">
       <voice-item></voice-item>
     </div>
-    <div v-if="item.type==='voice'" class="voice-duration-style">{{item.voiceDuration}}</div>
+    <div v-if="item.type==='voice'"
+         class="voice-duration-style">{{item.voiceDuration}}</div>
     <!-- 发送状态 -->
     <div v-if="isMy">
       <send-status></send-status>
@@ -25,13 +43,13 @@
   </div>
 </template>
 <script>
-import VoiceItem from './voice-item'
-import SendStatus from './send-status'
+import VoiceItem from "./voice-item";
+import SendStatus from "./send-status";
 export default {
   props: {
     item: Object,
     length: Number,
-    index: Number,
+    index: Number
   },
   components: {
     VoiceItem,
@@ -39,11 +57,12 @@ export default {
   },
   computed: {
     chatListArrowPic() {
-      return `../../../static/image/chat/popu_${this.isMy?'blue':'white'}.png`
+      return `../../../static/image/chat/popu_${
+        this.isMy ? "blue" : "white"
+      }.png`;
     }
   }
-}
-
+};
 </script>
 <style lang="scss" scoped>
 .chat-word {
@@ -102,7 +121,6 @@ export default {
 .chat-list-arrow-style {
   width: 11rpx;
   height: 20rpx;
-  margin-top: 25rpx
+  margin-top: 25rpx;
 }
-
 </style>

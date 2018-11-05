@@ -1,14 +1,14 @@
 <template>
-  <div :style="{'background-color': chatStatue==='open'?'#40c9ff':'#888888'}" class="chat-page-status">{{chatStatusContent}}</div>
+  <div :style="{'background-color': chatStatue==='open'?'#40c9ff':'#888888'}"
+       class="chat-page-status">{{chatStatusContent}}</div>
 </template>
 <script>
 export default {
   props: {
     chatStatusContent: String,
-    chatStatue: String,
+    chatStatue: String
   }
-}
-
+};
 </script>
 <style lang="scss" scoped>
 .chat-page-status {
@@ -24,5 +24,4 @@ export default {
   left: 0;
   z-index: 20;
 }
-
 </style>

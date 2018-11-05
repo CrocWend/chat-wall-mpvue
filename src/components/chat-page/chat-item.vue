@@ -1,16 +1,21 @@
 <template>
   <div class="chat-item">
-    <chat-time v-if="item.type ==='custom'" :data="item.content"></chat-time>
-    <chat-time v-else-if="item.type==='LOGIN' || item.type==='LOGOUT'" :data="item.content"></chat-time>
+    <chat-time v-if="item.type ==='custom'"
+               :data="item.content"></chat-time>
+    <chat-time v-else-if="item.type==='LOGIN' || item.type==='LOGOUT'"
+               :data="item.content"></chat-time>
     <div v-else>
-      <chat-time v-if="item.showTime" :data="item.time"></chat-time>
-      <chat-word length="length" index="index" item="item"></chat-word>
+      <chat-time v-if="item.showTime"
+                 :data="item.time"></chat-time>
+      <chat-word length="length"
+                 index="index"
+                 item="item"></chat-word>
     </div>
   </div>
 </template>
 <script>
-import ChatTime from './time'
-import ChatWord from './word'
+import ChatTime from "./time";
+import ChatWord from "./word";
 
 export default {
   props: {
@@ -23,10 +28,9 @@ export default {
     ChatTime
   },
   onLoad() {
-    console.log(this)
+    console.log(this);
   }
-}
-
+};
 </script>
 <style lang="scss" scoped>
 .chat-item {
@@ -34,8 +38,5 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-
 }
-
 </style>

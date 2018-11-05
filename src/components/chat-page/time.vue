@@ -6,8 +6,7 @@ export default {
   props: {
     data: String
   }
-}
-
+};
 </script>
 <style lang="scss" scoped>
 .chat-list-time-style {
@@ -21,5 +20,4 @@ export default {
   line-height: 22rpx;
   text-align: center;
 }
-
 </style>

@@ -3,8 +3,7 @@
     "pages/home/main",
     "pages/chat/main"
   ],
-  "window":
-  {
+  "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",

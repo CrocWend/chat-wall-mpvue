@@ -47,7 +47,7 @@ export default class FileSaveManager {
             let sizeNeedRemove = wholeSize + tempFileSize - MAX_SIZE;
             if (sizeNeedRemove >= 0) {
               //按时间戳排序，方便后续移除文件
-              fileList.sort(function(item1, item2) {
+              fileList.sort(function (item1, item2) {
                 return item1.createTime - item2.createTime;
               });
               let sizeCount = 0;
@@ -58,7 +58,7 @@ export default class FileSaveManager {
                     // console.log('移除的文件2', fileList[j].filePath);
                     wx.removeSavedFile({
                       filePath: fileList[j].filePath,
-                      success: function() {
+                      success: function () {
                         wholeSize -= fileList[j].size;
                         // console.log('移除成功', wholeSize);
                       }

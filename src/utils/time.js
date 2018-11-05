@@ -25,7 +25,7 @@ function justSimpleDealTime(currentItemTimeStamp, ifShowTime) {
                 timeStr: hoursAndMinutes
             };
         } else if (currentTimeDay === day - 1) {//昨天：昨天+时分（24小时制）
-            return {ifShowTime: ifShowTime, timeStr: '昨天 ' + hoursAndMinutes}
+            return { ifShowTime: ifShowTime, timeStr: '昨天 ' + hoursAndMinutes }
         }
     }
     return {

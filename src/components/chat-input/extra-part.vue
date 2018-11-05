@@ -1,7 +1,12 @@
 <template>
   <div class="extra-super">
-    <div v-for="(item, index) in chatInputExtraArr" :key="index" class="flex-column" @click="test1($event)" :data-index="index">
-      <img class="extra-image-size" :src="'../../../static/image/chat/extra/'+item.picName+'.png'" />
+    <div v-for="(item, index) in chatInputExtraArr"
+         :key="index"
+         class="flex-column"
+         @click="test1($event)"
+         :data-index="index">
+      <img class="extra-image-size"
+           :src="'../../../static/image/chat/extra/'+item.picName+'.png'" />
       <span class="extra-text-size">{{item.description}}</span>
     </div>
   </div>
@@ -14,11 +19,10 @@ export default {
   computed: {},
   methods: {
     test1(e) {
-      this.$emit('extraButtonClick', e)
-    },
+      this.$emit("extraButtonClick", e);
+    }
   }
-}
-
+};
 </script>
 <style lang="scss" scoped>
 .press-style {
@@ -34,18 +38,18 @@ export default {
   padding-top: 25rpx;
   height: 234rpx;
   width: 100%;
-  background-color: white
+  background-color: white;
 }
 
 .extra-image-size {
   width: 114rpx;
-  height: 114rpx
+  height: 114rpx;
 }
 
 .extra-text-size {
   color: #666666;
   font-size: 24rpx;
-  margin-top: 10rpx
+  margin-top: 10rpx;
 }
 
 .flex-column {
@@ -57,5 +61,4 @@ export default {
 .flex-row {
   display: flex;
 }
-
 </style>
