@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex'
+import AppIMDelegate from "../delegate/app-im-delegate";
 
 Vue.use(Vuex)
 
@@ -8,6 +9,7 @@ Vue.use(Vuex)
 const state = {
   appInfo: {},
   count: 0,
+  appIMDelegate: new AppIMDelegate(),
 }
 
 // mutations are operations that actually mutates the state.
@@ -29,7 +31,7 @@ const mutations = {
     Object.keys(config).map((item, key) => {
       state[item] = config[item]
     })
-  }
+  },
 }
 
 // actions are functions that cause side effects and can involve

@@ -37,6 +37,7 @@ import config from '../../config/config';
 import { msgPlaceholder } from '../../config/constant'
 import tools from '../../utils/tools'
 import weRequest from '../../utils/request';
+import AppIMDelegate from "@/delegate/app-im-delegate";
 
 export default {
   mpType: 'page',
@@ -51,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["appInfo"])
+    ...mapState(["appInfo", "appIMDelegate"])
   },
   methods: {
     ...mapActions(["update"]),
@@ -217,11 +218,11 @@ export default {
   },
   onLoad() {
     console.log('onLoad')
+    console.log(this)
     // 登录 获取session 存储到storage 用于解密数据
     weRequest.login(() => {
       // 登录之后的回调
     })
-
 
     // 进入页面从本地获取是否签到 已签到 isSign true 不显示签到模块
     try {
