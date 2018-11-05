@@ -1,4 +1,4 @@
-import { isVoiceRecordUseLatestVersion } from "@/components/chat-input/chat-input";
+import { isVoiceRecordUseLatestVersion } from "@/components/chat-input/chat-input-tools";
 import IMOperator from "../im-operator";
 import FileManager from "./base/file-manager";
 
@@ -23,17 +23,15 @@ export default class VoiceManager extends FileManager {
    */
   stopAllVoicePlay() {
     let that = this._page;
-    if (this._page.data.isVoicePlaying) {
+    if (this._page.isVoicePlaying) {
       this._stopVoice();
-      that.data.chatItems.forEach(item => {
+      that.chatItems.forEach(item => {
         if (IMOperator.VoiceType === item.type) {
           item.isPlaying = false
         }
       });
-      that.setData({
-        chatItems: that.data.chatItems,
-        isVoicePlaying: false
-      })
+      that.chatItems = that.chatItems
+      that.isVoicePlaying = false
     }
   }
 
@@ -51,7 +49,7 @@ export default class VoiceManager extends FileManager {
 
   _playVoice({ dataset }) {
     let that = this._page;
-    if (dataset.voicePath === that.data.latestPlayVoicePath && that.data.chatItems[dataset.index].isPlaying) {
+    if (dataset.voicePath === that.latestPlayVoicePath && that.chatItems[dataset.index].isPlaying) {
       this.stopAllVoicePlay();
     } else {
       this._startPlayVoice(dataset);
@@ -107,7 +105,7 @@ export default class VoiceManager extends FileManager {
 
   _myPlayVoice(filePath, dataset, cbOk, cbError) {
     let that = this._page;
-    if (dataset.isMy || that.data.isAndroid) {
+    if (dataset.isMy || that.isAndroid) {
       this.__playVoice({
         filePath: filePath,
         success: () => {
@@ -143,21 +141,19 @@ export default class VoiceManager extends FileManager {
 
   _startPlayVoice(dataset) {
     let that = this._page;
-    let chatItems = that.data.chatItems;
+    let chatItems = that.chatItems;
     chatItems[dataset.index].isPlaying = true;
-    if (that.data.latestPlayVoicePath && that.data.latestPlayVoicePath !== chatItems[dataset.index].content) { //如果重复点击同一个，则不将该isPlaying置为false
+    if (that.latestPlayVoicePath && that.latestPlayVoicePath !== chatItems[dataset.index].content) { //如果重复点击同一个，则不将该isPlaying置为false
       for (let i = 0, len = chatItems.length; i < len; i++) {
-        if ('voice' === chatItems[i].type && that.data.latestPlayVoicePath === chatItems[i].content) {
+        if ('voice' === chatItems[i].type && that.latestPlayVoicePath === chatItems[i].content) {
           chatItems[i].isPlaying = false;
           break;
         }
       }
     }
-    that.setData({
-      chatItems: chatItems,
-      isVoicePlaying: true
-    });
-    that.data.latestPlayVoicePath = dataset.voicePath;
+    that.chatItems = chatItems
+    that.isVoicePlaying = true
+    that.latestPlayVoicePath = dataset.voicePath;
   }
 
 }

@@ -37,7 +37,7 @@ export default class UI {
    * @param needScroll
    */
   updateDataWhenStartSending(sendMsg, addToArr = true, needScroll = true) {
-    chatInput.closeExtraView();
+    // chatInput.closeExtraView();
     sendMsg.sendStatus = 'sending';
     addToArr && this._page.chatItems.push(sendMsg);
     let obj = {};

@@ -17,8 +17,6 @@ export default class IMOperator {
     this.avatarUrl = getApp().globalData.appInfo.avatarUrl;
     this._otherHeadUrl = this._opts.friendHeadUrl;
     this.appIMDelegate = this._opts.appIMDelegate;
-    console.log(this)
-    console.log(getApp().globalData)
   }
 
   // getFriendId() {
@@ -35,14 +33,12 @@ export default class IMOperator {
     // });
     this.appIMDelegate.getIMHandlerDelegate().setOnReceiveMessageListener({
       listener: (msg) => {
-        console.log(msg)
         if (!msg) {
           return;
         }
         msg.isMy = msg.userId === getApp().globalData.appInfo.userId;
 
         const item = this.createNormalChatItem(msg);
-        console.log(item)
         // const item = this.createNormalChatItem({type: 'voice', content: '上传文件返回的语音文件路径', isMy: false});
         // const item = this.createNormalChatItem({type: 'image', content: '上传文件返回的图片文件路径', isMy: false});
         this._latestTImestamp = item.timestamp;
