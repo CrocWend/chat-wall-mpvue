@@ -390,9 +390,7 @@ function delayDismissCancelView() {
 function initData(opt) {
   _page.inputObj = inputObj = {
     voiceObj: {},
-    extraObj: {
-      chatInputShowExtra: true,
-    },
+    extraObj: {},
     inputStyle: {
       sendButtonBgColor: opt.sendButtonBgColor || 'mediumseagreen',
       sendButtonTextColor: opt.sendButtonTextColor || 'white'

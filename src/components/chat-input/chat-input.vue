@@ -26,10 +26,10 @@
       </view>
     </div>
     <!-- 扩展 -->
-    <view v-if="showExtraPart"
+    <view v-if="inputObj.extraObj.chatInputShowExtra"
           class="list-divide-line">235235</view>
     <extra-part @extraButtonClick="chatInputExtraItemClickEvent"
-                v-if="showExtraPart"
+                v-if="inputObj.extraObj.chatInputShowExtra"
                 :chatInputExtraArr="inputObj.extraObj.chatInputExtraArr"></extra-part>
   </div>
 </template>
@@ -167,10 +167,6 @@ export default {
           }
         }
       });
-    },
-
-    resetInputStatus() {
-      chatInputTools.closeExtraView();
     },
   }
 };

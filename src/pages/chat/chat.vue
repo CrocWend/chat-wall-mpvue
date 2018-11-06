@@ -6,7 +6,7 @@
                  :style="{'height':pageHeight+'px'}"
                  scroll-y="true"
                  scroll-top="scrollTopVal"
-                 bindtap="resetInputStatus">
+                 @click="resetInputStatus">
       <!-- <div v-for="item in chatItems" :key="index"> -->
       <chat-item v-for="(item, index) in chatItems"
                  :item="item"
@@ -32,6 +32,7 @@ import IMOperator from "./im-operator";
 import UI from "./ui";
 import MsgManager from "./msg-manager";
 import { inputPlaceHolder } from "@/config/constant";
+import {closeExtraView} from "@/components/chat-input/chat-input-tools";
 
 import ChatStatus from "@/components/chat-page/chat-status";
 import ChatItem from "@/components/chat-page/chat-item";
@@ -99,7 +100,9 @@ export default {
         success && success(urlFromServerWhenUploadSuccess);
       }, 1000);
     },
-
+    resetInputStatus() {
+      closeExtraView();
+    },
     sendMsg({ content, itemIndex, success }) {
       console.warn(content)
       // 发送消息后修改placeholder

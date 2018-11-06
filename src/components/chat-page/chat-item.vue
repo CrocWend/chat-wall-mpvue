@@ -4,13 +4,13 @@
                :data="item.content"></chat-time>
     <chat-time v-else-if="item.type==='LOGIN' || item.type==='LOGOUT'"
                :data="item.content"></chat-time>
-    <div v-else>
+    <block v-else>
       <chat-time v-if="item.showTime"
                  :data="item.time"></chat-time>
       <chat-word length="length"
                  index="index"
-                 item="item"></chat-word>
-    </div>
+                 :item="item"></chat-word>
+    </block>
   </div>
 </template>
 <script>
