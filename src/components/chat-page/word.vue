@@ -12,34 +12,35 @@
     <div v-if="item.type==='text'"
          :class="item.isMy ? 'isMyWordStyle': 'isOtherWordStyle'"
          @click="chatTextItemClickEvent"
-         data-index="item.index">{{content}}</div>
+         data-index="item.index">{{item.content}}</div>
     <!-- 发送的图片 -->
     <img v-if="item.type==='image'"
          class="chat-list-pic-style"
          :src="item.content"
          mode="aspectFill"
          @click="imageClickEvent"
-         data-url="item.content" />
+         :data-url="item.content" />
     <!-- 语音 -->
-    <div v-if="item.type==='voice'"
-         :style="{'width': (item.voiceDuration-1)*0.6+10 +'%',
-    'display': 'flex',
-    'justify-content': item.isMy?'flex-end':'flex-start',
-    'margin-bottom':(item.index===item.length-1?'150rpx':'20rpx')}"
-         :class="item.isMy ? 'isMyWordStyle': 'isOtherWordStyle'"
-         @click="chatVoiceItemClickEvent"
-         data-voice-path="item.content"
-         data-voice-duration="item.voiceDuration"
-         data-is-my="item.isMy"
-         data-index="item.index">
-      <voice-item></voice-item>
-    </div>
-    <div v-if="item.type==='voice'"
-         class="voice-duration-style">{{item.voiceDuration}}</div>
+    <block v-if="item.type==='voice'">
+      <div :style="{'width': (item.voiceDuration-1)*0.6+10 +'%',
+      'display': 'flex',
+      'justify-content': item.isMy?'flex-end':'flex-start',
+      'margin-bottom':(item.index===item.length-1?'150rpx':'20rpx')}"
+           :class="item.isMy ? 'isMyWordStyle': 'isOtherWordStyle'"
+           @click="chatVoiceItemClickEvent($event)"
+           :data-voice-path="item.content"
+           :data-voice-duration="item.voiceDuration"
+           :data-is-my="item.isMy"
+           :data-index="index">
+        <voice-item :isMy="item.isMy"
+                    :isPlaying="item.isPlaying"></voice-item>
+      </div>
+      <div class="voice-duration-style">{{item.voiceDuration}}</div>
+    </block>
     <!-- 发送状态 -->
-    <div v-if="isMy">
+    <block v-if="isMy">
       <send-status></send-status>
-    </div>
+    </block>
   </div>
 </template>
 <script>
@@ -57,9 +58,14 @@ export default {
   },
   computed: {
     chatListArrowPic() {
-      return `../../../static/image/chat/popu_${
+      return `/static/image/chat/popu_${
         this.isMy ? "blue" : "white"
       }.png`;
+    }
+  },
+  methods: {
+    chatVoiceItemClickEvent(e) {
+      this.$parent.$parent.chatVoiceItemClickEvent(e);
     }
   }
 };

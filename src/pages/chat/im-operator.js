@@ -52,7 +52,7 @@ export default class IMOperator {
   onSimulateSendMsg({ content, success, fail }) {
     //这里content即为要发送的数据
     //这里的content是一个对象了，不再是一个JSON格式的字符串。这样可以在发送消息的底层统一处理。
-    getApp().getIMHandler().sendMsg({
+    this.appIMDelegate.getIMHandlerDelegate().sendMsg({
       content,
       success: (content) => {
         //这个content格式一样,也是一个对象

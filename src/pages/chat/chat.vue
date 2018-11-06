@@ -15,10 +15,10 @@
                  :key="index"></chat-item>
       <!-- </div> -->
     </scroll-view>
-    <chat-input @sendMsg="sendMsgSuper"
-                :inputPlaceHolder="inputPlaceHolder"
-                @stopAllVoice="stopAllVoiceSuper"
-                @onSimulateSendMsg="onSimulateSendMsgSuper"></chat-input>
+    <chat-input :inputPlaceHolder="inputPlaceHolder"
+                :inputObj="inputObj"
+                :textMessage="textMessage"
+                :showVoicePart="true"></chat-input>
   </div>
 </template>
 <script>
@@ -32,7 +32,7 @@ import IMOperator from "./im-operator";
 import UI from "./ui";
 import MsgManager from "./msg-manager";
 import { inputPlaceHolder } from "@/config/constant";
-import {closeExtraView} from "@/components/chat-input/chat-input-tools";
+import * as chatInputTools from "@/components/chat-input/chat-input-tools";
 
 import ChatStatus from "@/components/chat-page/chat-status";
 import ChatItem from "@/components/chat-page/chat-item";
@@ -47,6 +47,7 @@ export default {
       isAndroid: true,
       chatStatue: "open",
       pageHeight: 0,
+      inputObj: {},
       inputPlaceHolder:
         inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]
     };
@@ -63,11 +64,7 @@ export default {
     options.appInfo = this.appInfo;
     this.appIMDelegate.onShow(options);
 
-    let systemInfo = wx.getSystemInfoSync();
-    this.pageHeight = systemInfo.windowHeight;
-    this.isAndroid = systemInfo.system.indexOf("Android") !== -1;
-
-    // this.initData();
+    this.initData();
     this.imOperator = new IMOperator(this, {
       timeStr: "",
       timestamp: null,
@@ -82,16 +79,63 @@ export default {
     });
 
     this.UI.updateChatStatus("正在聊天中...");
+    console.log("chat -this");
+    console.log(this);
   },
   methods: {
-    sendMsgSuper(options) {
-      this.msgManager.sendMsg(options);
+    initData() {
+      let self = this;
+      let systemInfo = wx.getSystemInfoSync();
+      chatInputTools.init(this, {
+        systemInfo: systemInfo,
+        minVoiceTime: 1,
+        maxVoiceTime: 60,
+        startTimeDown: 56,
+        format: "mp3", //aac/mp3
+        sendButtonBgColor: "mediumseagreen",
+        sendButtonTextColor: "white",
+        extraArr: [
+          {
+            picName: "choose_picture",
+            description: "照片"
+          },
+          {
+            picName: "take_photos",
+            description: "拍摄"
+          },
+          {
+            picName: "close_chat",
+            description: "自定义功能"
+          }
+        ]
+        // tabbarHeigth: 48
+      });
+
+      this.pageHeight = systemInfo.windowHeight;
+      this.isAndroid = systemInfo.system.indexOf("Android") !== -1;
+
+      self.textButton();
+      self.extraButton();
+      self.voiceButton();
     },
-    stopAllVoiceSuper() {
-      this.msgManager.stopAllVoice();
+    textButton() {
+      chatInputTools.setTextMessageListener(e => {
+        let content = e.mp.detail.value;
+        this.msgManager.sendMsg({ type: IMOperator.TextType, content });
+      });
     },
-    onSimulateSendMsgSuper(options) {
-      this.imOperator.onSimulateSendMsg(options);
+    voiceButton() {
+      chatInputTools.recordVoiceListener((res, duration) => {
+        let tempFilePath = res.tempFilePath;
+        this.msgManager.sendMsg({
+          type: IMOperator.VoiceType,
+          content: tempFilePath,
+          duration
+        });
+      });
+      chatInputTools.setVoiceRecordStatusListener(status => {
+        this.msgManager.stopAllVoice();
+      });
     },
     //模拟上传文件，注意这里的cbOk回调函数传入的参数应该是上传文件成功时返回的文件url，这里因为模拟，我直接用的savedFilePath
     simulateUploadFile({ savedFilePath, duration, itemIndex, success, fail }) {
@@ -100,15 +144,57 @@ export default {
         success && success(urlFromServerWhenUploadSuccess);
       }, 1000);
     },
+    extraButton() {
+      let self = this;
+      chatInputTools.clickExtraListener(e => {
+        let chooseIndex = parseInt(e.currentTarget.dataset.index);
+        if (chooseIndex === 2) {
+          self.myFun();
+          return;
+        }
+        wx.chooseImage({
+          count: 1, // 默认9
+          sizeType: ["compressed"],
+          sourceType: chooseIndex === 0 ? ["album"] : ["camera"],
+          success: res => {
+            this.msgManager.sendMsg({
+              type: IMOperator.ImageType,
+              content: res.tempFilePaths[0]
+            });
+          }
+        });
+      });
+      chatInputTools.setExtraButtonClickListener(dismiss => {
+        console.log("Extra弹窗是否消失", dismiss);
+        this.showExtraPart = dismiss;
+      });
+    },
+    /**
+     * 自定义事件
+     */
+    myFun() {
+      wx.showModal({
+        title: "小贴士",
+        content: "演示更新会话状态",
+        confirmText: "确认",
+        showCancel: true,
+        success: res => {
+          if (res.confirm) {
+            this.msgManager.sendMsg({ type: IMOperator.CustomType });
+          }
+        }
+      });
+    },
     resetInputStatus() {
-      closeExtraView();
+      chatInputTools.closeExtraView();
     },
     sendMsg({ content, itemIndex, success }) {
-      console.warn(content)
       // 发送消息后修改placeholder
-      content && content.type !== 'voice' && (this.inputPlaceHolder =
-        inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]),
-        this.$emit("onSimulateSendMsg", {
+      content &&
+        content.type !== "voice" &&
+        (this.inputPlaceHolder =
+          inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]),
+        this.imOperator.onSimulateSendMsg({
           content,
           success: msg => {
             this.UI.updateViewWhenSendSuccess(msg, itemIndex);

@@ -95,7 +95,7 @@ export default {
   methods: {
     ...mapActions(["update"]),
     onClickIcon() {
-      console.log(this.bindGetUserInfo);
+      // console.log(this.bindGetUserInfo);
       Toast("输入的手机号和员工信息保持一致");
     },
     bindPhoneInput: function(e) {
@@ -105,7 +105,7 @@ export default {
       this.signMessage = e.mp.detail;
     },
     bindGetUserInfo(e) {
-      console.log(e);
+      // console.log(e);
       this.joinRoom(this.appInfo.phone, e.mp.detail.userInfo);
     },
     /**
@@ -166,7 +166,7 @@ export default {
           "content-type": "application/json" // 默认值
         },
         success(res) {
-          console.log(res.data);
+          // console.log(res.data);
           // 登录成功跳转聊天页面
           if (res.data.result) {
             console.log("设置头像等信息");
@@ -205,7 +205,7 @@ export default {
       if (self.signWithPhoneNo) {
         phone = signPhone;
       }
-      console.log(this);
+      // console.log(this);
 
       if (phone.length !== 11) {
         Toast("手机号错误");
@@ -226,7 +226,7 @@ export default {
           "content-type": "application/json" // 默认值
         },
         success(res) {
-          console.log(res.data);
+          // console.log(res.data);
           let data = res.data;
           if (data.result) {
             Toast.success("签到成功啦");
@@ -254,8 +254,8 @@ export default {
     }
   },
   onLoad() {
-    console.log("onLoad");
-    console.log(this);
+    // console.log("onLoad");
+    // console.log(this);
     // 登录 获取session 存储到storage 用于解密数据
     weRequest.login(() => {
       // 登录之后的回调

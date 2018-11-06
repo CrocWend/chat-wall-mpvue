@@ -46,6 +46,7 @@ function init(page, opt) {
   initChangeInputWayEvent();
   if (wx.getRecorderManager) {
     recorderManager = wx.getRecorderManager();
+    console.log(recorderManager)
     dealVoiceLongClickEventWithHighVersion();
   } else {
     dealVoiceLongClickEventWithLowVersion();
@@ -55,7 +56,6 @@ function init(page, opt) {
 }
 
 function clickExtraListener(cb) {
-  console.log(cb)
   _page.chatInputExtraItemClickEvent = typeof cb === "function" ? cb : null;
 }
 
@@ -89,8 +89,8 @@ function setVoiceRecordStatusListener(cb) {
 
 function initChangeInputWayEvent() {
   _page.changeInputWayEvent = function () {
-    _page.inputStatus = _page.inputStatus === 'text' ? 'voice' : 'text';
-    _page.inputObj.extraObj.chatInputShowExtra = false
+    _page.$set(_page.inputObj, 'inputStatus',  _page.inputObj.inputStatus === 'text' ? 'voice' : 'text')
+    _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra',  false)
   }
 }
 
@@ -144,8 +144,6 @@ function dealVoiceLongClickEventWithHighVersion() {
   })
   _page.long$click$voice$btn = function (e) {
     if ('send$voice$btn' === e.currentTarget.id) { //长按时需要打开录音功能，开始录音
-      console.log('23232332true')
-      console.log(_page)
       //调出取消弹窗
       _page.$set(_page.inputObj.voiceObj, 'showCancelSendVoicePart', true)
       _page.$set(_page.inputObj.voiceObj, 'timeDownNum',  maxVoiceTime - singleVoiceTimeCount)
@@ -219,11 +217,11 @@ function dealVoiceLongClickEventWithLowVersion() {
       checkRecordAuth(function () {
         wx.startRecord({
           success: function (res) {
-            console.log(res, _page.data.inputObj.voiceObj.status);
-            if (_page.data.inputObj.voiceObj.status === 'short') { //录音时间太短或者移动到了取消录音区域， 则取消录音
+            console.log(res, _page.inputObj.voiceObj.status);
+            if (_page.inputObj.voiceObj.status === 'short') { //录音时间太短或者移动到了取消录音区域， 则取消录音
               typeof startVoiceRecordCbOk === "function" && startVoiceRecordCbOk(status.SHORT);
               return;
-            } else if (_page.data.inputObj.voiceObj.moveToCancel) {
+            } else if (_page.inputObj.voiceObj.moveToCancel) {
               typeof startVoiceRecordCbOk === "function" && startVoiceRecordCbOk(status.CANCEL);
               return;
             }
@@ -443,6 +441,7 @@ function setTextMessageListener(cb) {
 }
 
 function isVoiceRecordUseLatestVersion() {
+  console.log(recorderManager)
   return !!recorderManager;
 }
 

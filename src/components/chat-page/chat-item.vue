@@ -7,8 +7,8 @@
     <block v-else>
       <chat-time v-if="item.showTime"
                  :data="item.time"></chat-time>
-      <chat-word length="length"
-                 index="index"
+      <chat-word :length="length"
+                 :index="index"
                  :item="item"></chat-word>
     </block>
   </div>
@@ -28,7 +28,6 @@ export default {
     ChatTime
   },
   onLoad() {
-    console.log(this);
   }
 };
 </script>

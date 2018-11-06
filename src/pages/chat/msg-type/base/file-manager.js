@@ -62,8 +62,6 @@ export default class FileManager {
       content,
       duration
     });
-    console.log('this------')
-    console.log(this)
     this._page.UI.showItemForMoment(temp, (itemIndex) => {
       this.uploadFileAndSend({ content, duration, itemIndex, type })
     });

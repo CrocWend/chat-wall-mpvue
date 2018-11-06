@@ -6,7 +6,7 @@
          @click="test1($event)"
          :data-index="index">
       <img class="extra-image-size"
-           :src="'../../../static/image/chat/extra/'+item.picName+'.png'" />
+           :src="'/static/image/chat/extra/'+item.picName+'.png'" />
       <span class="extra-text-size">{{item.description}}</span>
     </div>
   </div>

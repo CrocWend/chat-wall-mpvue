@@ -5,7 +5,7 @@
     <img v-if="sendStatus==='failed'"
          class="chat-loading-common"
          @click="resendMsgEvent"
-         src="../../../static/image/chat/send_fail.png"
+         src="/static/image/chat/send_fail.png"
          data-resend-index="index" />
   </div>
 </template>

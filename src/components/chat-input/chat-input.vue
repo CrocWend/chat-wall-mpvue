@@ -1,34 +1,38 @@
 <template>
   <div class="chat-input">
     <div class="input-text-voice-super">
-      <img v-if="showVoicePart"
-           class="extra-btn-style"
-           @click="changeInputWayEvent"
-           :src="keyboardOrVoicePic" />
-      <chat-voice v-if="inputStatus==='voice'"
-                  :voiceObj="inputObj.voiceObj"
-                  @longClickVoiceBtn="long$click$voice$btn"
-                  @sendVoiceMoveEvent="send$voice$move$event"
-                  @sendVoiceMoveEndEvent="send$voice$move$end$event"></chat-voice>
-      <input v-if="inputStatus==='text'"
+      <block v-if="showVoicePart">
+        <img class="extra-btn-style"
+             @click="this.$parent.changeInputWayEvent"
+             :src="keyboardOrVoicePic" />
+        <chat-voice v-if="inputObj.inputStatus==='voice'"
+                    :voiceObj="inputObj.voiceObj"
+                    :canUsePress="inputObj.canUsePress"></chat-voice>
+      </block>
+
+      <input v-if="inputObj.inputStatus==='text'"
              class="chat-input-style"
              :style="{'margin-left':showVoicePart?0:'16rpx'}"
+             :placeholder="inputPlaceHolder"
+             :value="textMessage"
+             @confirm="this.$parent.chatInputSendTextMessage"
+             @focus="this.$parent.chatInputBindFocusEvent"
+             @blur="this.$parent.chatInputBindBlurEvent"
+             @input="this.$parent.chatInputGetValueEvent"
+             confirm-hold
              maxlength="500"
              confirm-type="send"
-             :value="textMessage"
-             confirm-hold
-             :placeholder="inputPlaceHolder"
              placeholder-class="input-placeholder-class" />
       <!-- 右侧按钮 -->
-      <view @click="chatInputExtraClickEvent">
+      <view @click="this.$parent.chatInputExtraClickEvent">
         <img class="extra-btn-style"
-             src="../../../static/image/chat/extra.png" />
+             src="/static/image/chat/extra.png" />
       </view>
     </div>
     <!-- 扩展 -->
     <view v-if="inputObj.extraObj.chatInputShowExtra"
           class="list-divide-line">235235</view>
-    <extra-part @extraButtonClick="chatInputExtraItemClickEvent"
+    <extra-part @extraButtonClick="this.$parent.chatInputExtraItemClickEvent"
                 v-if="inputObj.extraObj.chatInputShowExtra"
                 :chatInputExtraArr="inputObj.extraObj.chatInputExtraArr"></extra-part>
   </div>
@@ -45,129 +49,26 @@ import ChatVoice from "@/components/chat-input/chat-voice";
 export default {
   props: {
     inputPlaceHolder: String,
-  },
-  data() {
-    return {
-      textMessage: "",
-      chatItems: [],
-      showVoicePart: true,
-      showExtraPart: false,
-      inputStatus: "text",
-      inputObj: {
-      },
-    };
+    inputObj: Object,
+    textMessage: String,
+    showVoicePart: Boolean,
   },
   components: {
     ExtraPart,
     ChatVoice
   },
-  onLoad() {
-    this.initData();
-  },
+  onLoad() {},
   computed: {
     keyboardOrVoicePic() {
-      return `../../../static/image/chat/voice/${
+      return `/static/image/chat/voice/${
         this.inputObj.inputStatus === "voice" ? "keyboard" : "voice"
       }.png`;
     }
   },
   methods: {
-    test() {},
-    initData() {
-      let self = this;
-      let systemInfo = wx.getSystemInfoSync();
-      chatInputTools.init(this, {
-        systemInfo: systemInfo,
-        minVoiceTime: 1,
-        maxVoiceTime: 60,
-        startTimeDown: 56,
-        format: "mp3", //aac/mp3
-        sendButtonBgColor: "mediumseagreen",
-        sendButtonTextColor: "white",
-        extraArr: [
-          {
-            picName: "choose_picture",
-            description: "照片"
-          },
-          {
-            picName: "take_photos",
-            description: "拍摄"
-          },
-          {
-            picName: "close_chat",
-            description: "自定义功能"
-          }
-        ]
-        // tabbarHeigth: 48
-      });
-
-      self.textButton();
-      self.extraButton();
-      self.voiceButton();
-    },
-    textButton() {
-      chatInputTools.setTextMessageListener(e => {
-        let content = e.detail.value;
-        this.$emit("sendMsg", { type: IMOperator.TextType, content });
-      });
-    },
-    voiceButton() {
-      chatInputTools.recordVoiceListener((res, duration) => {
-        let tempFilePath = res.tempFilePath;
-        console.error(this)
-        this.$emit("sendMsg", {
-          type: IMOperator.VoiceType,
-          content: tempFilePath,
-          duration
-        });
-      });
-      chatInputTools.setVoiceRecordStatusListener(status => {
-        this.$emit("stopAllVoice");
-      });
-    },
-
-    
-    extraButton() {
-      let self = this;
-      chatInputTools.clickExtraListener(e => {
-        let chooseIndex = parseInt(e.currentTarget.dataset.index);
-        if (chooseIndex === 2) {
-          self.myFun();
-          return;
-        }
-        wx.chooseImage({
-          count: 1, // 默认9
-          sizeType: ["compressed"],
-          sourceType: chooseIndex === 0 ? ["album"] : ["camera"],
-          success: res => {
-            this.$emit("sendMsg", {
-              type: IMOperator.ImageType,
-              content: res.tempFilePaths[0]
-            });
-          }
-        });
-      });
-      chatInputTools.setExtraButtonClickListener(dismiss => {
-        console.log("Extra弹窗是否消失", dismiss);
-        this.showExtraPart = dismiss;
-      });
-    },
-    /**
-     * 自定义事件
-     */
-    myFun() {
-      wx.showModal({
-        title: "小贴士",
-        content: "演示更新会话状态",
-        confirmText: "确认",
-        showCancel: true,
-        success: res => {
-          if (res.confirm) {
-            this.$emit("sendMsg", { type: IMOperator.CustomType });
-          }
-        }
-      });
-    },
+    test() {
+      console.log(this)
+    }
   }
 };
 </script>
