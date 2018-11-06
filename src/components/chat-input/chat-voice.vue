@@ -1,6 +1,6 @@
 <template>
   <div class="voice">
-    <button v-if="canUsePress"
+    <button v-if="voiceObj.canUsePress"
             @longpress="longClickVoiceBtn($event)"
             @touchmove.stop="sendVoiceMoveEvent($event)"
             @touchend.stop="sendVoiceMoveEndEvent($event)"
@@ -14,13 +14,16 @@
             id="send$voice$btn"
             hover-class="btn-voice-press">{{voiceObj.startStatus?'松开 结束':'按住 说话'}}
     </button>
+    <!-- 
+      
+     -->
     <div v-if="voiceObj.showCancelSendVoicePart"
          class="send-voice-part"
          :style="{'width': voiceObj.voicePartWidth+'px','height': voiceObj.voicePartWidth +'px','left': voiceObj.voicePartPositionToLeft +'px','bottom': voiceObj.voicePartPositionToBottom +'px'}">
       <div class="bg"
            :style="{'opacity':voiceObj.status==='timeDown'?0.6:0}"></div>
       <image class="voiceIcon"
-             :src="'./../../image/chat/voice/'+voiceObj.status==='start'?(voiceObj.moveToCancel?'recall':'speak'):'attention'+'.png'"
+             :src="'../../../static/image/chat/voice/'+(voiceObj.status==='start'?(voiceObj.moveToCancel?'recall':'speak'):'attention')+'.png'"
              v-if="voiceObj.status!=='timeDown'" />
       <span class="timeDownNum"
             v-if="voiceObj.status==='timeDown'">{{voiceObj.timeDownNum}}</span>
@@ -38,11 +41,12 @@
 export default {
   props: {
     voiceObj: Object,
-    canUsePress: Boolean
   },
   computed: {},
   methods: {
     longClickVoiceBtn(e) {
+      console.log('voiceObj')
+      console.log(this.voiceObj)
       this.$emit("longClickVoiceBtn", e);
     },
     sendVoiceMoveEvent(e) {

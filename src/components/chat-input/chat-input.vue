@@ -3,11 +3,10 @@
     <div class="input-text-voice-super">
       <img v-if="showVoicePart"
            class="extra-btn-style"
-           @click="test"
+           @click="changeInputWayEvent"
            :src="keyboardOrVoicePic" />
       <chat-voice v-if="inputStatus==='voice'"
                   :voiceObj="inputObj.voiceObj"
-                  :canUsePress="inputObj.canUsePress"
                   @longClickVoiceBtn="long$click$voice$btn"
                   @sendVoiceMoveEvent="send$voice$move$event"
                   @sendVoiceMoveEndEvent="send$voice$move$end$event"></chat-voice>
@@ -36,7 +35,7 @@
 </template>
 <script>
 import * as chatInputTools from "@/components/chat-input/chat-input-tools";
-import { inputPlaceHolder } from "@/config/constant";
+
 import tools from "@/utils/tools";
 import IMOperator from "@/pages/chat/im-operator";
 
@@ -44,6 +43,9 @@ import ExtraPart from "@/components/chat-input/extra-part";
 import ChatVoice from "@/components/chat-input/chat-voice";
 
 export default {
+  props: {
+    inputPlaceHolder: String,
+  },
   data() {
     return {
       textMessage: "",
@@ -51,9 +53,8 @@ export default {
       showVoicePart: true,
       showExtraPart: false,
       inputStatus: "text",
-      inputObj: {},
-      inputPlaceHolder:
-        inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]
+      inputObj: {
+      },
     };
   },
   components: {
@@ -113,6 +114,7 @@ export default {
     voiceButton() {
       chatInputTools.recordVoiceListener((res, duration) => {
         let tempFilePath = res.tempFilePath;
+        console.error(this)
         this.$emit("sendMsg", {
           type: IMOperator.VoiceType,
           content: tempFilePath,
@@ -124,13 +126,7 @@ export default {
       });
     },
 
-    //模拟上传文件，注意这里的cbOk回调函数传入的参数应该是上传文件成功时返回的文件url，这里因为模拟，我直接用的savedFilePath
-    simulateUploadFile({ savedFilePath, duration, itemIndex, success, fail }) {
-      setTimeout(() => {
-        let urlFromServerWhenUploadSuccess = savedFilePath;
-        success && success(urlFromServerWhenUploadSuccess);
-      }, 1000);
-    },
+    
     extraButton() {
       let self = this;
       chatInputTools.clickExtraListener(e => {
@@ -176,22 +172,6 @@ export default {
     resetInputStatus() {
       chatInputTools.closeExtraView();
     },
-
-    sendMsg({ content, itemIndex, success }) {
-      // 发送消息后修改placeholder
-      (this.inputPlaceHolder =
-        inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]),
-        this.$emit("onSimulateSendMsg", {
-          content,
-          success: msg => {
-            this.UI.updateViewWhenSendSuccess(msg, itemIndex);
-            success && success(msg);
-          },
-          fail: () => {
-            this.UI.updateViewWhenSendFailed(itemIndex);
-          }
-        });
-    }
   }
 };
 </script>

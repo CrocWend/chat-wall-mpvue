@@ -96,24 +96,19 @@ function initChangeInputWayEvent() {
 
 function initVoiceData() {
   let width = windowWidth / 2.6;
-  // _page['inputObj.inputStyle'] = _page.inputObj.inputStyle
-  // _page['inputObj.inputStyle'] = _page.inputObj.inputStyle,
 
-  _page.inputStatus = 'text'
-  Object.assign(_page.inputObj, {
-    'inputStyle': _page.inputObj.inputStyle,
-    'canUsePress': canUsePress,
-    'windowHeight': windowHeight,
-    'windowWidth': windowWidth,
-  })
-  Object.assign(_page.inputObj.voiceObj, {
-    'status': 'end',
-    'startStatus': 0,
-    'voicePartWidth': width,
-    'moveToCancel': false,
-    'voicePartPositionToBottom': (windowHeight - width / 2.4) / 2,
-    'voicePartPositionToLeft': (windowWidth - width) / 2
-  })
+  _page.$set(_page.inputObj, 'inputStyle', _page.inputObj.inputStyle)
+  _page.$set(_page.inputObj, 'canUsePress',  canUsePress)
+  _page.$set(_page.inputObj, 'inputStatus',  'text')
+  _page.$set(_page.inputObj, 'windowHeight', windowHeight)
+  _page.$set(_page.inputObj, 'windowWidth', windowWidth)
+  _page.$set(_page.inputObj.voiceObj, 'status', 'end')
+  _page.$set(_page.inputObj.voiceObj, 'startStatus', 0)
+  _page.$set(_page.inputObj.voiceObj, 'voicePartWidth', width)
+  _page.$set(_page.inputObj.voiceObj, 'moveToCancel', false)
+  _page.$set(_page.inputObj.voiceObj, 'voicePartPositionToBottom', (windowHeight - width / 2.4) / 2)
+  _page.$set(_page.inputObj.voiceObj, 'voicePartPositionToLeft', (windowWidth - width) / 2)
+
   cancelLineYPosition = windowHeight * 0.12;
 }
 
@@ -122,9 +117,9 @@ function setExtraButtonClickListener(fun) {
 }
 
 function initExtraData(extra$arr) {
-  _page.inputObj.extraObj.chatInputExtraArr = extra$arr
+  _page.$set(_page.inputObj.extraObj, 'chatInputExtraArr', extra$arr)
   _page.chatInputExtraClickEvent = function () {
-    _page.inputObj.extraObj.chatInputShowExtra = !_page.inputObj.extraObj.chatInputShowExtra
+    _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra', !_page.inputObj.extraObj.chatInputShowExtra)
     extraButtonClickEvent && extraButtonClickEvent(!_page.inputObj.extraObj.chatInputShowExtra);
   };
 }
@@ -136,10 +131,10 @@ function dealVoiceLongClickEventWithHighVersion() {
     timer = setInterval(function () {
       singleVoiceTimeCount++;
       if (singleVoiceTimeCount >= startTimeDown && singleVoiceTimeCount < maxVoiceTime) {
-        _page.inputObj.voiceObj.timeDownNum = maxVoiceTime - singleVoiceTimeCount
-        _page.inputObj.voiceObj.status = 'timeDown'
+        _page.$set(_page.inputObj.voiceObj, 'timeDownNum', maxVoiceTime - singleVoiceTimeCount)
+        _page.$set(_page.inputObj.voiceObj, 'status', 'timeDown')
       } else if (singleVoiceTimeCount >= maxVoiceTime) {
-        _page.inputObj.voiceObj.status = 'timeout'
+        _page.$set(_page.inputObj.voiceObj, 'status', 'timeout')
         delayDismissCancelView();
         clearInterval(timer);
         //TODO 停止录音并生成IM语音信息 并将时长拼入到IM消息中
@@ -149,13 +144,14 @@ function dealVoiceLongClickEventWithHighVersion() {
   })
   _page.long$click$voice$btn = function (e) {
     if ('send$voice$btn' === e.currentTarget.id) { //长按时需要打开录音功能，开始录音
-      Object.assign(_page.inputObj.voiceObj, { //调出取消弹窗
-        'showCancelSendVoicePart': true,
-        'timeDownNum': maxVoiceTime - singleVoiceTimeCount,
-        'status': 'start',
-        'startStatus': 1,
-        'moveToCancel': false
-      });
+      console.log('23232332true')
+      console.log(_page)
+      //调出取消弹窗
+      _page.$set(_page.inputObj.voiceObj, 'showCancelSendVoicePart', true)
+      _page.$set(_page.inputObj.voiceObj, 'timeDownNum',  maxVoiceTime - singleVoiceTimeCount)
+      _page.$set(_page.inputObj.voiceObj, 'status', 'start')
+      _page.$set(_page.inputObj.voiceObj, 'startStatus', 1)
+      _page.$set(_page.inputObj.voiceObj, 'moveToCancel', false)
       typeof startVoiceRecordCbOk === "function" && startVoiceRecordCbOk(status.START);
       checkRecordAuth(function () {
         recorderManager.start({ duration: 60000, format: voiceFormat });
@@ -165,10 +161,8 @@ function dealVoiceLongClickEventWithHighVersion() {
           .error('录音拒绝授权');
         clearInterval(timer);
         endRecord();
-        Object.assign(_page.inputObj.voiceObj, { //调出取消弹窗
-          'showCancelSendVoicePart': false,
-          'status': 'end',
-        });
+        _page.$set(_page.inputObj.voiceObj, 'showCancelSendVoicePart', false)
+        _page.$set(_page.inputObj.voiceObj, 'status', 'end')
         typeof startVoiceRecordCbOk === "function" && startVoiceRecordCbOk(status.UNAUTH);
 
         if (!sendVoiceCbError) {
@@ -182,13 +176,13 @@ function dealVoiceLongClickEventWithHighVersion() {
                   wx.openSetting({
                     success: res => {
                       if (res.authSetting['scope.record']) {
-                        _page.inputObj.extraObj.chatInputShowExtra = false
+                        _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra', false)
                       }
                     }
                   });
                 } else {
-                  _page.inputStatus = 'text'
-                  _page.inputObj.extraObj.chatInputShowExtra = false
+                  _page.$set(_page.inputObj, 'inputStatus', 'text')
+                  _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra', false)
                 }
               }
             });
@@ -216,13 +210,11 @@ function dealVoiceLongClickEventWithLowVersion() {
   _page.long$click$voice$btn = function (e) {
     if ('send$voice$btn' === e.currentTarget.id) { //长按时需要打开录音功能，开始录音
       singleVoiceTimeCount = 0;
-      Object.assign(_page.inputObj.voiceObj, { //调出取消弹窗
-        'showCancelSendVoicePart': true,
-        'timeDownNum': maxVoiceTime - singleVoiceTimeCount,
-        'status': 'start',
-        'startStatus': 1,
-        'moveToCancel': false
-      });
+      _page.$set(_page.inputObj.voiceObj, 'showCancelSendVoicePart', true)
+      _page.$set(_page.inputObj.voiceObj, 'timeDownNum',  maxVoiceTime - singleVoiceTimeCount)
+      _page.$set(_page.inputObj.voiceObj, 'status', 'start')
+      _page.$set(_page.inputObj.voiceObj, 'startStatus', 1)
+      _page.$set(_page.inputObj.voiceObj, 'moveToCancel', false)
       typeof startVoiceRecordCbOk === "function" && startVoiceRecordCbOk(status.START);
       checkRecordAuth(function () {
         wx.startRecord({
@@ -248,10 +240,10 @@ function dealVoiceLongClickEventWithLowVersion() {
         timer = setInterval(function () {
           singleVoiceTimeCount++;
           if (singleVoiceTimeCount >= startTimeDown && singleVoiceTimeCount < maxVoiceTime) {
-            _page.inputObj.voiceObj.timeDownNum = maxVoiceTime - singleVoiceTimeCount
-            _page.inputObj.voiceObj.status = 'timeDown'
+            _page.$set(_page.inputObj.voiceObj, 'timeDownNum', maxVoiceTime - singleVoiceTimeCount)
+            _page.$set(_page.inputObj.voiceObj, 'status', 'timeDown')
           } else if (singleVoiceTimeCount >= maxVoiceTime) {
-            _page.inputObj.voiceObj.status = 'timeout'
+            _page.$set(_page.inputObj.voiceObj, 'status', 'timeout')
             delayDismissCancelView();
             clearInterval(timer);
             //TODO 停止录音并生成IM语音信息 并将时长拼入到IM消息中
@@ -263,10 +255,8 @@ function dealVoiceLongClickEventWithLowVersion() {
         console.error('录音拒绝授权');
         clearInterval(timer);
         endRecord();
-        Object.assign(_page.inputObj.voiceObj, {
-          'status': 'end',
-          'showCancelSendVoicePart': false
-        })
+        _page.$set(_page.inputObj.voiceObj, 'showCancelSendVoicePart', false)
+        _page.$set(_page.inputObj.voiceObj, 'status', 'end')
         typeof startVoiceRecordCbOk === "function" && startVoiceRecordCbOk(status.UNAUTH);
 
         if (!sendVoiceCbError) {
@@ -280,13 +270,13 @@ function dealVoiceLongClickEventWithLowVersion() {
                   wx.openSetting({
                     success: res => {
                       if (res.authSetting['scope.record']) {
-                        _page.inputObj.extraObj.chatInputShowExtra = false
+                        _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra', false)
                       }
                     }
                   });
                 } else {
-                  _page.inputStatus = 'text'
-                  _page.inputObj.extraObj.chatInputShowExtra = false
+                  _page.$set(_page.inputObj, 'inputStatus', 'text')
+                  _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra', false)
                 }
               }
             });
@@ -316,11 +306,11 @@ function dealVoiceMoveEvent() {
       let y = windowHeight + tabbarHeigth - e.touches[0].clientY;
       if (y > cancelLineYPosition) {
         if (!inputObj.voiceObj.moveToCancel) {
-          _page.inputObj.voiceObj.moveToCancel = true
+          _page.$set(_page.inputObj.voiceObj, 'moveToCancel', true)
         }
       } else {
         if (inputObj.voiceObj.moveToCancel) { //如果移出了该区域
-          _page.inputObj.voiceObj.moveToCancel = false
+          _page.$set(_page.inputObj.voiceObj, 'moveToCancel', false)
         }
       }
 
@@ -332,13 +322,11 @@ function dealVoiceMoveEndEvent() {
   _page.send$voice$move$end$event = function (e) {
     if ('send$voice$btn' === e.currentTarget.id) {
       if (singleVoiceTimeCount < minVoiceTime) { //语音时间太短
-        _page.inputObj.voiceObj.status = 'short'
+        _page.$set(_page.inputObj.voiceObj, 'status', 'short')
         delayDismissCancelView();
       } else { //语音时间正常
-        Object.assign(_page.inputObj.voiceObj, {
-          'showCancelSendVoicePart': false,
-          'status': 'end'
-        })
+        _page.$set(_page.inputObj.voiceObj, 'status', 'end')
+        _page.$set(_page.inputObj.voiceObj, 'showCancelSendVoicePart', false)
       }
       if (timer) { //关闭定时器
         clearInterval(timer);
@@ -387,14 +375,14 @@ function checkRecordAuth(cbOk, cbError) {
 }
 
 function closeExtraView() {
-  _page.inputObj.extraObj.chatInputShowExtra = false
+  _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra', false)
 }
 
 function delayDismissCancelView() {
   setTimeout(function () {
     if (inputObj.voiceObj.status !== 'start') {
-      _page.inputObj.voiceObj.showCancelSendVoicePart = false
-      _page.inputObj.voiceObj.status = 'end'
+      _page.$set(_page.inputObj.voiceObj, 'showCancelSendVoicePart', false)
+      _page.$set(_page.inputObj.voiceObj, 'status', 'end')
     }
   }, 1000)
 }
@@ -413,7 +401,7 @@ function initData(opt) {
 }
 
 function endRecord() {
-  _page.inputObj.voiceObj.startStatus = 0
+  _page.$set(_page.inputObj.voiceObj, 'startStatus', 0)
   if (!recorderManager) {
     wx.stopRecord();
   } else {
@@ -424,15 +412,15 @@ function endRecord() {
 function setTextMessageListener(cb) {
   if (_page) {
     _page.chatInputBindFocusEvent = function () {
-      _page.inputObj.inputType = 'text'
+      _page.$set(_page.inputObj, 'inputType', 'text')
     };
     _page.chatInputBindBlurEvent = function () {
       setTimeout(() => {
         if (!inputObj.inputValueEventTemp || !inputObj.inputValueEventTemp.detail.value) {
           inputObj.inputValueEventTemp = null;
-          _page.inputObj.inputType = 'none'
+          _page.$set(_page.inputObj, 'inputType', 'none')
         }
-        _page.inputObj.extraObj.chatInputShowExtra = false
+        _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra', false)
       });
     };
     _page.chatInputSendTextMessage = function (e) {
@@ -446,7 +434,7 @@ function setTextMessageListener(cb) {
       }
 
       _page.textMessage = ''
-      _page.inputObj.inputType = 'none'
+      _page.$set(_page.inputObj, 'inputType', 'none')
       inputObj.inputValueEventTemp = null;
 
     }

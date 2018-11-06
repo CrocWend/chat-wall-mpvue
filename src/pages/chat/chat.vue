@@ -16,6 +16,7 @@
       <!-- </div> -->
     </scroll-view>
     <chat-input @sendMsg="sendMsgSuper"
+                :inputPlaceHolder="inputPlaceHolder"
                 @stopAllVoice="stopAllVoiceSuper"
                 @onSimulateSendMsg="onSimulateSendMsgSuper"></chat-input>
   </div>
@@ -30,8 +31,7 @@ import weRequest from "../../utils/request";
 import IMOperator from "./im-operator";
 import UI from "./ui";
 import MsgManager from "./msg-manager";
-const app = getApp();
-// import * as chatInput from "@/components/chat-input/chat-input";
+import { inputPlaceHolder } from "@/config/constant";
 
 import ChatStatus from "@/components/chat-page/chat-status";
 import ChatItem from "@/components/chat-page/chat-item";
@@ -45,7 +45,9 @@ export default {
       latestPlayVoicePath: "",
       isAndroid: true,
       chatStatue: "open",
-      pageHeight: 0
+      pageHeight: 0,
+      inputPlaceHolder:
+        inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]
     };
   },
   components: {
@@ -90,7 +92,30 @@ export default {
     onSimulateSendMsgSuper(options) {
       this.imOperator.onSimulateSendMsg(options);
     },
+    //模拟上传文件，注意这里的cbOk回调函数传入的参数应该是上传文件成功时返回的文件url，这里因为模拟，我直接用的savedFilePath
+    simulateUploadFile({ savedFilePath, duration, itemIndex, success, fail }) {
+      setTimeout(() => {
+        let urlFromServerWhenUploadSuccess = savedFilePath;
+        success && success(urlFromServerWhenUploadSuccess);
+      }, 1000);
+    },
 
+    sendMsg({ content, itemIndex, success }) {
+      console.warn(content)
+      // 发送消息后修改placeholder
+      content && content.type !== 'voice' && (this.inputPlaceHolder =
+        inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]),
+        this.$emit("onSimulateSendMsg", {
+          content,
+          success: msg => {
+            this.UI.updateViewWhenSendSuccess(msg, itemIndex);
+            success && success(msg);
+          },
+          fail: () => {
+            this.UI.updateViewWhenSendFailed(itemIndex);
+          }
+        });
+    },
     /**
      * 重发消息
      * @param e
