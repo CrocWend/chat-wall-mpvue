@@ -11,25 +11,31 @@ export default class FileManager {
    * @param msg 接收到的消息，这个对象应是由 im-operator.js 中的createNormalChatItem()方法生成的。
    */
   showMsg({ msg }) {
+    console.log("showMsg")
+    console.log(msg)
     const url = msg.content;
     const localFilePath = FileSaveManager.get(msg);
+    console.log('localFilePath')
+    console.log(localFilePath)
     if (!localFilePath) {
       wx.downloadFile({
         url,
         success: res => {
           // console.log('下载成功', res);
-          FileSaveManager.saveFileRule({
-            tempFilePath: res.tempFilePath,
-            success: (savedFilePath) => {
-              msg.content = savedFilePath;
-              this._page.UI && this._page.UI.updateViewWhenReceive(msg);
-              FileSaveManager.set(msg, savedFilePath);
-            },
-            fail: res => {
-              // console.log('存储失败', res);
-              this._page.UI && this._page.UI.updateViewWhenReceive(msg);
-            }
-          })
+          // 不存储
+          this._page.UI && this._page.UI.updateViewWhenReceive(msg);
+          // FileSaveManager.saveFileRule({
+          //   tempFilePath: res.tempFilePath,
+          //   success: (savedFilePath) => {
+          //     msg.content = savedFilePath;
+          //     this._page.UI && this._page.UI.updateViewWhenReceive(msg);
+          //     FileSaveManager.set(msg, savedFilePath);
+          //   },
+          //   fail: res => {
+          //     // console.log('存储失败', res);
+          //     this._page.UI && this._page.UI.updateViewWhenReceive(msg);
+          //   }
+          // })
         }
       });
     } else {
@@ -44,16 +50,18 @@ export default class FileManager {
    * @param content 由输入组件接收到的临时文件路径
    * @param duration 由输入组件接收到的录音时间
    */
-  sendOneMsg({ type, content, duration }) {
-    FileSaveManager.saveFileRule({
-      tempFilePath: content,
-      success: (savedFilePath) => {
-        this._sendFileMsg({ content: savedFilePath, duration, type });
-      },
-      fail: res => {
-        this._sendFileMsg({ content, type, duration });
-      }
-    });
+  sendOneMsg(content) {
+    // 不存储直接发送
+    this._sendFileMsg(content);
+    // FileSaveManager.saveFileRule({
+    //   tempFilePath: content,
+    //   success: (savedFilePath) => {
+    //     this._sendFileMsg({ content: savedFilePath, duration, type });
+    //   },
+    //   fail: res => {
+    //     this._sendFileMsg({ content, type, duration });
+    //   }
+    // });
   }
 
   _sendFileMsg({ content, duration, type }) {
@@ -77,7 +85,7 @@ export default class FileManager {
           content: this._page.imOperator.createChatItemContent({ type, content, duration }),
           itemIndex,
           success: (msg) => {
-            FileSaveManager.set(msg, content);
+            // FileSaveManager.set(msg, content);
           }
         });
       },

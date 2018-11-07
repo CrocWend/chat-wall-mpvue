@@ -1,6 +1,6 @@
 <template>
   <div class="chat-word"
-       :style="{'flex-direction': item.isMy?'row-reverse':'row','margin-bottom':(index===length-1?'150rpx':'20rpx')}">
+       :style="{'flex-direction': item.isMy?'row-reverse':'row'}">
     <!-- 头像 -->
     <img class="head-url"
          :src="item.headUrl" />
@@ -16,10 +16,10 @@
     <!-- 发送的图片 -->
     <img v-if="item.type==='image'"
          class="chat-list-pic-style"
-         :src="item.content"
          mode="aspectFill"
-         @click="imageClickEvent"
-         :data-url="item.content" />
+         :src="item.content"
+         @click="imageClickEvent($event)"
+         :data-url="item.largePic" />
     <!-- 语音 -->
     <block v-if="item.type==='voice'">
       <div :style="{'width': (item.voiceDuration-1)*0.6+10 +'%',
@@ -66,6 +66,10 @@ export default {
   methods: {
     chatVoiceItemClickEvent(e) {
       this.$parent.$parent.chatVoiceItemClickEvent(e);
+    },
+    imageClickEvent(e) {
+      console.log(this.item)
+      this.$parent.$parent.imageClickEvent(e);
     }
   }
 };
@@ -75,7 +79,7 @@ export default {
   width: 100%;
   display: flex;
   margin-top: 20rpx;
-
+  margin-bottom: 20rpx;
   .head-url {
     width: 70rpx;
     height: 70rpx;
@@ -112,8 +116,8 @@ export default {
 .chat-list-pic-style {
   border-radius: 10rpx;
   margin-left: 5rpx;
-  width: 150rpx;
-  height: 280rpx;
+  width: 180rpx;
+  height: 180rpx;
 }
 
 .voice-duration-style {

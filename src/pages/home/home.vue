@@ -62,13 +62,19 @@
                   open-type="getUserInfo"
                   @getuserinfo="bindGetUserInfo">加入群聊</van-button>
     </div>
+    <div class="button">
+      <van-button block
+                  size="large"
+                  @click="clear"
+                  type="primary">清除缓存</van-button>
+    </div>
+
     <van-toast id="van-toast" />
   </div>
 </template>
 <script>
 import { mapState, mapActions } from "vuex";
 
-var app = getApp();
 import Toast from "@/../static/vant/toast/toast";
 import config from "../../config/config";
 import { msgPlaceholder } from "../../config/constant";
@@ -92,8 +98,38 @@ export default {
   computed: {
     ...mapState(["appInfo", "appIMDelegate"])
   },
+
+  onLoad() {
+    // console.log("onLoad");
+    // console.log(this);
+    // 登录 获取session 存储到storage 用于解密数据
+    weRequest.login(() => {
+      // 登录之后的回调
+    });
+
+    // 进入页面从本地获取是否签到 已签到 isSign true 不显示签到模块
+    try {
+      var value = wx.getStorageSync("appInfo");
+      if (value) {
+        // 更新store
+        this.update({ appInfo: value });
+        // app.globalData.appInfo = value;
+        this.isSign = value.isSign;
+      }
+    } catch (e) {
+      // Do something when catch error
+    }
+  },
   methods: {
     ...mapActions(["update"]),
+    clear() {
+      try {
+        wx.clearStorageSync();
+        Toast("清理成功");
+      } catch (e) {
+        // Do something when catch error
+      }
+    },
     onClickIcon() {
       // console.log(this.bindGetUserInfo);
       Toast("输入的手机号和员工信息保持一致");
@@ -105,7 +141,7 @@ export default {
       this.signMessage = e.mp.detail;
     },
     bindGetUserInfo(e) {
-      // console.log(e);
+      console.log('bindGetUserInfo');
       this.joinRoom(this.appInfo.phone, e.mp.detail.userInfo);
     },
     /**
@@ -152,12 +188,13 @@ export default {
      * 加入群聊
      */
     joinRoom(phone, userInfo) {
+      console.log('joinRoom')
       let self = this;
       wx.request({
         url: config.apiUrl + "/nh/joinRoom",
         data: {
           phone: phone,
-          nickName: userInfo.nickName,
+          nickName: encodeURIComponent(userInfo.nickName),
           gender: userInfo.gender,
           avatarUrl: userInfo.avatarUrl
         },
@@ -251,26 +288,6 @@ export default {
           }
         }
       });
-    }
-  },
-  onLoad() {
-    // console.log("onLoad");
-    // console.log(this);
-    // 登录 获取session 存储到storage 用于解密数据
-    weRequest.login(() => {
-      // 登录之后的回调
-    });
-
-    // 进入页面从本地获取是否签到 已签到 isSign true 不显示签到模块
-    try {
-      var value = wx.getStorageSync("appInfo");
-      if (value) {
-        // Do something with return value
-        app.globalData.appInfo = value;
-        this.isSign = value.isSign;
-      }
-    } catch (e) {
-      // Do something when catch error
     }
   }
 };

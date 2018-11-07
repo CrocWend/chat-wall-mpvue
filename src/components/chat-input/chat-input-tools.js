@@ -412,7 +412,7 @@ function setTextMessageListener(cb) {
     };
     _page.chatInputBindBlurEvent = function () {
       setTimeout(() => {
-        if (!inputObj.inputValueEventTemp || !inputObj.inputValueEventTemp.detail.value) {
+        if (!inputObj.inputValueEventTemp || !inputObj.inputValueEventTemp.mp.detail.value) {
           inputObj.inputValueEventTemp = null;
           _page.$set(_page.inputObj, 'inputType', 'none')
         }
@@ -425,7 +425,7 @@ function setTextMessageListener(cb) {
       inputObj.inputValueEventTemp = null;
     };
     _page.chatInputSendTextMessage02 = function () {
-      if (!!inputObj.inputValueEventTemp && !!inputObj.inputValueEventTemp.detail.value) {
+      if (!!inputObj.inputValueEventTemp && !!inputObj.inputValueEventTemp.mp.detail.value) {
         typeof cb === "function" && cb(JSON.parse(JSON.stringify(inputObj.inputValueEventTemp)));
       }
 
@@ -441,7 +441,6 @@ function setTextMessageListener(cb) {
 }
 
 function isVoiceRecordUseLatestVersion() {
-  console.log(recorderManager)
   return !!recorderManager;
 }
 

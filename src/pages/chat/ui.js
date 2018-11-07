@@ -1,4 +1,4 @@
-import * as chatInput from "../../components/chat-input/chat-input";
+import {closeExtraView} from "../../components/chat-input/chat-input-tools";
 
 /**
  * 用户处理消息的收发UI更新
@@ -37,8 +37,10 @@ export default class UI {
    * @param needScroll
    */
   updateDataWhenStartSending(sendMsg, addToArr = true, needScroll = true) {
-    // chatInput.closeExtraView();
+    closeExtraView();
+    console.log('updateDataWhenStartSending')
     sendMsg.sendStatus = 'sending';
+    console.log(sendMsg)
     addToArr && this._page.chatItems.push(sendMsg);
     let obj = {};
     obj['textMessage'] = '';
@@ -48,7 +50,7 @@ export default class UI {
   }
 
   /**
-   * 设置消息发送状态为 发送成功
+   * 设置消息发送状态为 发送成功 更新信息
    * @param sendMsg
    * @param itemIndex
    */
@@ -57,6 +59,9 @@ export default class UI {
     let that = this._page;
     let item = that.chatItems[itemIndex];
     item.timestamp = sendMsg.timestamp;
+    item.largePic = sendMsg.largePic;
+    item.content = sendMsg.content;
+    item.userId = sendMsg.userId;
     this.updateSendStatusView('success', itemIndex);
   }
 

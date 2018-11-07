@@ -5,7 +5,7 @@
     <scroll-view class="scroll-view"
                  :style="{'height':pageHeight+'px'}"
                  scroll-y="true"
-                 scroll-top="scrollTopVal"
+                 :scroll-top="scrollTopVal"
                  @click="resetInputStatus">
       <!-- <div v-for="item in chatItems" :key="index"> -->
       <chat-item v-for="(item, index) in chatItems"
@@ -47,6 +47,7 @@ export default {
       isAndroid: true,
       chatStatue: "open",
       pageHeight: 0,
+      scrollTopVal: 0,
       inputObj: {},
       inputPlaceHolder:
         inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]
@@ -61,11 +62,13 @@ export default {
     ...mapState(["appInfo", "appIMDelegate"])
   },
   onLoad(options) {
+    console.error(this.appInfo)
     options.appInfo = this.appInfo;
     this.appIMDelegate.onShow(options);
 
     this.initData();
     this.imOperator = new IMOperator(this, {
+      appInfo: this.appInfo,
       timeStr: "",
       timestamp: null,
       type: "text",
@@ -74,7 +77,11 @@ export default {
     this.UI = new UI(this);
     this.msgManager = new MsgManager(this);
 
+    console.log('this.imOperator.onSimulateReceiveMsg')
+    console.log(this.imOperator.onSimulateReceiveMsg)
     this.imOperator.onSimulateReceiveMsg(msg => {
+      console.log('chat onSimulateReceiveMsg')
+      console.log(msg)
       this.msgManager.showMsg({ msg });
     });
 
@@ -86,6 +93,7 @@ export default {
     initData() {
       let self = this;
       let systemInfo = wx.getSystemInfoSync();
+      console.log(systemInfo)
       chatInputTools.init(this, {
         systemInfo: systemInfo,
         minVoiceTime: 1,
@@ -139,10 +147,13 @@ export default {
     },
     //模拟上传文件，注意这里的cbOk回调函数传入的参数应该是上传文件成功时返回的文件url，这里因为模拟，我直接用的savedFilePath
     simulateUploadFile({ savedFilePath, duration, itemIndex, success, fail }) {
-      setTimeout(() => {
-        let urlFromServerWhenUploadSuccess = savedFilePath;
-        success && success(urlFromServerWhenUploadSuccess);
-      }, 1000);
+      this.upLoadPic(savedFilePath, (res) => {
+        let data = JSON.parse(res.data);
+        if(data.msg === 'ok' && data.data.images) {
+          // 返回所有图片
+          success && success(data.data.images);
+        }
+      })
     },
     extraButton() {
       let self = this;
@@ -161,12 +172,33 @@ export default {
               type: IMOperator.ImageType,
               content: res.tempFilePaths[0]
             });
+            
           }
         });
       });
       chatInputTools.setExtraButtonClickListener(dismiss => {
         console.log("Extra弹窗是否消失", dismiss);
         this.showExtraPart = dismiss;
+      });
+    },
+    upLoadPic(path, success, fail) {
+      wx.showLoading({
+        title: '努力上传中...',
+      }) 
+      wx.uploadFile({
+        url: "https://api.berryapi.net/sina", //新浪微博图床
+        filePath: path,
+        name: "file",
+        // formData: {
+        //   user: "test"
+        // },
+        success(res) {
+          wx.hideLoading()
+          success && success(res);
+        },
+        fail(error) {
+          fail &&fail(error);
+        }
       });
     },
     /**
@@ -190,20 +222,23 @@ export default {
     },
     sendMsg({ content, itemIndex, success }) {
       // 发送消息后修改placeholder
+      console.log('content')
+      console.log(content)
       content &&
-        content.type !== "voice" &&
+        content.type === "text" &&
         (this.inputPlaceHolder =
           inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]),
-        this.imOperator.onSimulateSendMsg({
-          content,
-          success: msg => {
-            this.UI.updateViewWhenSendSuccess(msg, itemIndex);
-            success && success(msg);
-          },
-          fail: () => {
-            this.UI.updateViewWhenSendFailed(itemIndex);
-          }
-        });
+      this.imOperator.onSimulateSendMsg({
+        content,
+        success: msg => {
+          console.error(msg)
+          this.UI.updateViewWhenSendSuccess(msg, itemIndex);
+          success && success(msg);
+        },
+        fail: () => {
+          this.UI.updateViewWhenSendFailed(itemIndex);
+        }
+      });
     },
     /**
      * 重发消息
@@ -227,6 +262,8 @@ export default {
     display: flex;
     flex-direction: column;
     margin-top: 54rpx;
+    // 解决安卓scroll-view滑动卡顿
+    -webkit-overflow-scrolling:touch;
   }
 }
 </style>

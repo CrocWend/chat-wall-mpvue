@@ -18,7 +18,7 @@ export default class WebSocketHandlerImp extends IIMHandler {
      */
     createConnection({options}) {
         !this._isLogin && wx.connectSocket({
-            url: `${options.url}?appInfo=${encodeURI(JSON.stringify(options.appInfo))}`,
+            url: `${options.url}?appInfo=${encodeURIComponent(encodeURIComponent(JSON.stringify(options.appInfo)))}`,
             header: {
                 'content-type': 'application/json'
             },
@@ -27,6 +27,8 @@ export default class WebSocketHandlerImp extends IIMHandler {
     }
 
     _sendMsgImp({content, success, fail}) {
+        console.log('_sendMsgImp')
+        console.log(content)
         wx.sendSocketMessage({
             data: JSON.stringify(content), success: () => {
                 success && success(content);

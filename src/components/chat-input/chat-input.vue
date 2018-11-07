@@ -24,17 +24,23 @@
              confirm-type="send"
              placeholder-class="input-placeholder-class" />
       <!-- 右侧按钮 -->
-      <view @click="this.$parent.chatInputExtraClickEvent">
-        <img class="extra-btn-style"
+      <div hover-class="press-style-opacity">
+        <div v-if="inputObj.inputType==='text'"
+              class="chat-input-send-button-style"
+              :style="{'background-color': inputObj.inputStyle.sendButtonBgColor, 'color': inputObj.inputStyle.sendButtonTextColor}"
+              @click="this.$parent.chatInputSendTextMessage02">发送</div>
+        <img v-else
+              class="extra-btn-style"
+              @click="this.$parent.chatInputExtraClickEvent"
              src="/static/image/chat/extra.png" />
-      </view>
+      </div>
     </div>
     <!-- 扩展 -->
-    <view v-if="inputObj.extraObj.chatInputShowExtra"
-          class="list-divide-line">235235</view>
-    <extra-part @extraButtonClick="this.$parent.chatInputExtraItemClickEvent"
-                v-if="inputObj.extraObj.chatInputShowExtra"
-                :chatInputExtraArr="inputObj.extraObj.chatInputExtraArr"></extra-part>
+    <block v-if="inputObj.extraObj.chatInputShowExtra">
+      <view class="list-divide-line"></view>
+      <extra-part @extraButtonClick="this.$parent.chatInputExtraItemClickEvent"
+                  :chatInputExtraArr="inputObj.extraObj.chatInputExtraArr"></extra-part>
+    </block>
   </div>
 </template>
 <script>
@@ -51,7 +57,7 @@ export default {
     inputPlaceHolder: String,
     inputObj: Object,
     textMessage: String,
-    showVoicePart: Boolean,
+    showVoicePart: Boolean
   },
   components: {
     ExtraPart,
@@ -67,7 +73,7 @@ export default {
   },
   methods: {
     test() {
-      console.log(this)
+      console.log(this);
     }
   }
 };

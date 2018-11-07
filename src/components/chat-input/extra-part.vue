@@ -53,6 +53,7 @@ export default {
 }
 
 .flex-column {
+  width: 25%;
   display: flex;
   flex-direction: column;
   align-items: center;
