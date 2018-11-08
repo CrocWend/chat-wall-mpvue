@@ -11,8 +11,6 @@ export default class MsgManager extends MsgTypeManager {
   }
 
   sendMsg({ type = IMOperator.TextType, content, duration }) {
-    console.warn('arguments[0]')
-    console.warn(arguments[0])
     this.getMsgManager({ type }).sendOneMsg(arguments[0]);
   }
 

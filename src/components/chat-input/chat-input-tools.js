@@ -46,7 +46,6 @@ function init(page, opt) {
   initChangeInputWayEvent();
   if (wx.getRecorderManager) {
     recorderManager = wx.getRecorderManager();
-    console.log(recorderManager)
     dealVoiceLongClickEventWithHighVersion();
   } else {
     dealVoiceLongClickEventWithLowVersion();
@@ -64,7 +63,6 @@ function recordVoiceListener(cbOk, cbError) {
   sendVoiceCbOk = cbOk;
   if (!!recorderManager) {
     typeof cbOk === "function" && (recorderManager.onStop(function (res) {
-      console.log(res, _page.inputObj.voiceObj.status);
       if (_page.inputObj.voiceObj.status === 'short') { //录音时间太短或者移动到了取消录音区域， 则取消录音
         typeof startVoiceRecordCbOk === "function" && startVoiceRecordCbOk(status.SHORT);
         return;
@@ -155,8 +153,7 @@ function dealVoiceLongClickEventWithHighVersion() {
         recorderManager.start({ duration: 60000, format: voiceFormat });
       }, function (res) {
         //录音失败
-        console
-          .error('录音拒绝授权');
+        console.error('录音拒绝授权');
         clearInterval(timer);
         endRecord();
         _page.$set(_page.inputObj.voiceObj, 'showCancelSendVoicePart', false)

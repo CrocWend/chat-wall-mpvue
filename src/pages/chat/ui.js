@@ -13,7 +13,6 @@ export default class UI {
    * @param msg
    */
   updateViewWhenReceive(msg) {
-    console.log(msg)
     this._page.chatItems.push(msg);
     this._page.chatItems = this._page.chatItems.sort(UI._sortMsgListByTimestamp)
     this._page.scrollTopVal = this._page.chatItems.length * 999
@@ -38,13 +37,12 @@ export default class UI {
    */
   updateDataWhenStartSending(sendMsg, addToArr = true, needScroll = true) {
     closeExtraView();
-    console.log('updateDataWhenStartSending')
     sendMsg.sendStatus = 'sending';
-    console.log(sendMsg)
     addToArr && this._page.chatItems.push(sendMsg);
     let obj = {};
     obj['textMessage'] = '';
     obj['chatItems'] = this._page.chatItems;
+    console.error(needScroll)
     needScroll && (obj['scrollTopVal'] = this._page.chatItems.length * 999);
     Object.assign(this._page, obj)
   }

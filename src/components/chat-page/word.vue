@@ -98,7 +98,7 @@ export default {
     flex-direction: column;
     .nick-name {
       font-size: 24rpx;
-      color: #ccc;
+      color: rgba(0, 0, 0, 0.26);
       margin-bottom: 16rpx;
     }
   }
@@ -111,15 +111,6 @@ export default {
   font-size: 30rpx;
   max-width: 80%;
   position: relative;
-  &::after {
-    content: ' ';
-    position: absolute;
-    top: 50%;
-    right: 0;
-    width: 10rpx;
-    height: 10rpx;
-    background: red;
-  }
 }
 
 .isMyWordStyle {
@@ -128,6 +119,18 @@ export default {
   // margin-right: -1rpx;
   // margin-left: 14rpx;
   word-wrap: break-word;
+  &::after {
+    content: ' ';
+    position: absolute;
+    top: 50%;
+    right: -8rpx;
+    width: 0rpx;
+    height: 0rpx;
+    border-top: 10rpx solid transparent;
+    border-left: 10rpx solid #8fcbf7;
+    border-bottom: 10rpx solid transparent;
+    transform: translateY(-50%);
+  }
 }
 
 .isOtherWordStyle {
@@ -136,6 +139,18 @@ export default {
   // margin-right: 14rpx;
   // margin-left: -1rpx;
   word-wrap: break-word;
+  &::after {
+    content: ' ';
+    position: absolute;
+    top: 50%;
+    left: -8rpx;
+    width: 0rpx;
+    height: 0rpx;
+    border-top: 10rpx solid transparent;
+    border-right: 10rpx solid #fff;
+    border-bottom: 10rpx solid transparent;
+    transform: translateY(-50%);
+  }
 }
 
 .chat-list-pic-style {

@@ -14,7 +14,7 @@ weRequest.init({
   // [必填] 用code换取session的CGI配置
   codeToSession: {
     // [必填] CGI的URL
-    url: '/nh/jscode2session',
+    url: '/jscode2session',
     // [可选] 调用改CGI的方法；可不配置，默认为GET
     method: 'POST',
     // [可选] CGI中传参时，存放code的名称，此处例子名称就是code；可不配置，默认值为code
@@ -23,8 +23,11 @@ weRequest.init({
     data: {},
     // [必填] CGI中返回的session值
     success: function (res) {
+      try {
+        wx.setStorageSync("session_key", res.session_key);
+      } catch (e) {}
       // 此处例子：CGI返回数据中的字段session即为session值
-      // console.log(wx.getStorageSync('session'))
+      // console.log()
       return res.session;
       // 存储wxtoken
     },

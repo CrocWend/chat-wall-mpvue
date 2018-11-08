@@ -37,8 +37,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  &.last-child {
-    margin-bottom: 200rpx;
-  }
+  // &.last-child {
+  //   margin-bottom: 200rpx;
+  // }
 }
 </style>

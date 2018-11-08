@@ -1,7 +1,7 @@
 <template>
   <div class="chat-input">
     <div class="input-text-voice-super">
-      <block v-if="showVoicePart">
+      <block v-if="showVoicePart === 'true'">
         <img class="extra-btn-style"
              @click="this.$parent.changeInputWayEvent"
              :src="keyboardOrVoicePic" />
@@ -12,7 +12,7 @@
 
       <input v-if="inputObj.inputStatus==='text'"
              class="chat-input-style"
-             :style="{'margin-left':showVoicePart?0:'16rpx'}"
+             :style="{'margin-left':showVoicePart==='true'?0:'16rpx'}"
              :placeholder="inputPlaceHolder"
              :value="textMessage"
              @confirm="this.$parent.chatInputSendTextMessage"
@@ -57,7 +57,7 @@ export default {
     inputPlaceHolder: String,
     inputObj: Object,
     textMessage: String,
-    showVoicePart: Boolean
+    showVoicePart: String
   },
   components: {
     ExtraPart,

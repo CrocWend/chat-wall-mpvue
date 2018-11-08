@@ -43,9 +43,6 @@ export default {
   },
   computed: {},
   methods: {
-    test() {
-      console.warn(this.$parent.$parent)
-    },
     longClickVoiceBtn(e) {
       this.$parent.$parent.long$click$voice$btn(e)
     },

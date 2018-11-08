@@ -11,12 +11,8 @@ export default class FileManager {
    * @param msg 接收到的消息，这个对象应是由 im-operator.js 中的createNormalChatItem()方法生成的。
    */
   showMsg({ msg }) {
-    console.log("showMsg")
-    console.log(msg)
     const url = msg.content;
     const localFilePath = FileSaveManager.get(msg);
-    console.log('localFilePath')
-    console.log(localFilePath)
     if (!localFilePath) {
       wx.downloadFile({
         url,

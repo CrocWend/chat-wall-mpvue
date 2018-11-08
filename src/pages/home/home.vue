@@ -4,21 +4,23 @@
     <div v-if="!isSign">
       <div class="">留言会随机展示在大屏幕上哦</div>
       <van-cell-group>
-        <van-transition name="fade-up"
-                        show="signWithPhoneNo"
-                        custom-class="block">
-          <van-field :value="signPhone"
-                     required
-                     clearable
-                     label="手机号"
-                     type="number"
-                     icon="question"
-                     maxlength="11"
-                     title-width="70px"
-                     placeholder="请输入手机号"
-                     @clickIcon="onClickIcon"
-                     @input="bindPhoneInput" />
-        </van-transition>
+        <div v-if="signWithPhoneNo">
+          <van-transition name="fade-up"
+                          show="signWithPhoneNo"
+                          custom-class="block">
+            <van-field :value="signPhone"
+                       required
+                       clearable
+                       label="手机号"
+                       type="number"
+                       icon="question"
+                       maxlength="11"
+                       title-width="70px"
+                       placeholder="请输入手机号"
+                       @clickIcon="onClickIcon"
+                       @input="bindPhoneInput" />
+          </van-transition>
+        </div>
         <van-field :value="signMessage"
                    required
                    label="留言"
@@ -61,12 +63,13 @@
                   type="primary"
                   open-type="getUserInfo"
                   @getuserinfo="bindGetUserInfo">加入群聊</van-button>
-    </div>
-    <div class="button">
-      <van-button block
-                  size="large"
-                  @click="clear"
-                  type="primary">清除缓存</van-button>
+
+      <div class="button">
+        <van-button block
+                    size="large"
+                    @click="clear"
+                    type="primary">清除缓存</van-button>
+      </div>
     </div>
 
     <van-toast id="van-toast" />
@@ -86,7 +89,7 @@ export default {
   mpType: "page",
   data() {
     return {
-      signWithPhoneNo: true, // 默认不输入手机号
+      signWithPhoneNo: false, // 默认不输入手机号
       signPhone: "", // 输入的签到手机号
       signMessage: "", // 留言
       isSign: false, // 是否签到
@@ -100,8 +103,18 @@ export default {
   },
 
   onLoad() {
-    // console.log("onLoad");
-    // console.log(this);
+    // wx.request({
+    //     url: config.apiUrl + "/userList",
+    //     data: {},
+    //     method: "POST",
+    //     header: {
+    //       "content-type": "application/json"
+    //     },
+    //     success: function(res) {
+    //       console.warn(res)
+    //     }
+    //   });
+    //   return;
     // 登录 获取session 存储到storage 用于解密数据
     weRequest.login(() => {
       // 登录之后的回调
@@ -131,7 +144,6 @@ export default {
       }
     },
     onClickIcon() {
-      // console.log(this.bindGetUserInfo);
       Toast("输入的手机号和员工信息保持一致");
     },
     bindPhoneInput: function(e) {
@@ -141,7 +153,6 @@ export default {
       this.signMessage = e.mp.detail;
     },
     bindGetUserInfo(e) {
-      console.log('bindGetUserInfo');
       this.joinRoom(this.appInfo.phone, e.mp.detail.userInfo);
     },
     /**
@@ -151,13 +162,14 @@ export default {
     getPhoneNumber(e) {
       var self = this;
       // 获取手机号出错 用户输入
+      console.log(e);
       if (!e.mp.detail.encryptedData) {
         Toast("请先授权获取手机号");
         return;
       }
 
       // 调用解密接口 拿到手机号签到
-      this.getEncryptData(e.detail, phoneNumber => {
+      this.getEncryptData(e.mp.detail, phoneNumber => {
         this.sign(phoneNumber);
       });
     },
@@ -166,9 +178,9 @@ export default {
      * 使用保存的session
      */
     getEncryptData(detail, callback) {
-      var session_key = wx.getStorageSync("session");
+      var session_key = wx.getStorageSync("session_key");
       wx.request({
-        url: config.apiUrl + "/nh/encryptPhoneData",
+        url: config.apiUrl + "/encryptPhoneData",
         data: {
           encryptedData: detail.encryptedData,
           iv: detail.iv,
@@ -188,10 +200,9 @@ export default {
      * 加入群聊
      */
     joinRoom(phone, userInfo) {
-      console.log('joinRoom')
       let self = this;
       wx.request({
-        url: config.apiUrl + "/nh/joinRoom",
+        url: config.apiUrl + "/joinRoom",
         data: {
           phone: phone,
           nickName: encodeURIComponent(userInfo.nickName),
@@ -203,7 +214,6 @@ export default {
           "content-type": "application/json" // 默认值
         },
         success(res) {
-          // console.log(res.data);
           // 登录成功跳转聊天页面
           if (res.data.result) {
             console.log("设置头像等信息");
@@ -242,7 +252,6 @@ export default {
       if (self.signWithPhoneNo) {
         phone = signPhone;
       }
-      // console.log(this);
 
       if (phone.length !== 11) {
         Toast("手机号错误");
@@ -253,7 +262,7 @@ export default {
         return;
       }
       wx.request({
-        url: config.apiUrl + "/nh/sign",
+        url: config.apiUrl + "/sign",
         data: {
           phone: phone, // 签到手机号
           message: signMessage // 留言内容
@@ -263,7 +272,6 @@ export default {
           "content-type": "application/json" // 默认值
         },
         success(res) {
-          // console.log(res.data);
           let data = res.data;
           if (data.result) {
             Toast.success("签到成功啦");

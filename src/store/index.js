@@ -38,7 +38,6 @@ const mutations = {
 // asynchronous operations.
 const actions = {
   update: ({ commit }, config) => {
-    console.log(config)
     commit('update', config);
 
   },

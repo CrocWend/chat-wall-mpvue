@@ -27,8 +27,6 @@ export default class WebSocketHandlerImp extends IIMHandler {
     }
 
     _sendMsgImp({content, success, fail}) {
-        console.log('_sendMsgImp')
-        console.log(content)
         wx.sendSocketMessage({
             data: JSON.stringify(content), success: () => {
                 success && success(content);
@@ -78,8 +76,6 @@ export default class WebSocketHandlerImp extends IIMHandler {
     _onSocketMessage() {
         wx.onSocketMessage((res) => {
             let msg = JSON.parse(res.data);
-            console.log('23423424322')
-            console.warn(msg)
             if ('LOGIN' === msg.type) {
                 this._isLogin = true;
                 this._receiveListener && this._receiveListener(msg);

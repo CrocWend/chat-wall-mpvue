@@ -10,7 +10,7 @@
   },
   "miniprogramRoot": "./dist/",
   "compileType": "miniprogram",
-  "appid": "wxa16e3d0428f474f9",
+  "appid": "wx8c1951e4bda06065",
   "projectname": "chat-wall-mpvue",
   "condition":
   {

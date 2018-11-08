@@ -37,13 +37,9 @@ export default class IMOperator {
         if (!msg) {
           return;
         }
-        console.log(' im-opt msg')
-        console.log(msg)
         msg.isMy = msg.userId === this._opts.appInfo.userId;
 
         const item = this.createNormalChatItem(msg);
-        console.log(' im-opt item')
-        console.log(item)
         // const item = this.createNormalChatItem({type: 'voice', content: '上传文件返回的语音文件路径', isMy: false});
         // const item = this.createNormalChatItem({type: 'image', content: '上传文件返回的图片文件路径', isMy: false});
         this._latestTImestamp = item.timestamp;
@@ -56,8 +52,6 @@ export default class IMOperator {
 
   onSimulateSendMsg({ content, success, fail }) {
     //这里content即为要发送的数据
-    console.log('onSimulateSendMsg')
-    console.log(content)
     //这里的content是一个对象了，不再是一个JSON格式的字符串。这样可以在发送消息的底层统一处理。
     this.appIMDelegate.getIMHandlerDelegate().sendMsg({
       content,
@@ -72,12 +66,8 @@ export default class IMOperator {
   }
 
   createChatItemContent({ type = IMOperator.TextType, content = '', duration } = {}) {
-    console.log('createChatItemContent')
-    console.log(content)
-    console.log(type)
     if (type !== 'image' && !content.replace(/^\s*|\s*$/g, '')) return;
     
-    console.warn(this._opts.appInfo)
     return {
       content: type === 'image' ? content.thumb180 : content,
       largePic: type === 'image' ? content.mw1024: '',
@@ -94,9 +84,6 @@ export default class IMOperator {
   createNormalChatItem({ type = IMOperator.TextType, content = '', isMy = true, duration, userId, avatarUrl, nickName, largePic } = {}) {
     if (!content) return;
     const currentTimestamp = Date.now();
-    console.log('createNormalChatItem------------------------------')
-    console.log(content)
-    console.log(largePic)
     const time = dealChatTime(currentTimestamp, this._latestTImestamp);
     let obj = {
       msgId: 0, //消息id
@@ -116,8 +103,6 @@ export default class IMOperator {
       isPlaying: false, //语音是否正在播放
     };
     obj.saveKey = obj.userId + '_' + obj.content; //saveKey是存储文件时的key
-    console.log('obj---------------------------------')
-    console.warn(obj)
     return obj;
   }
 

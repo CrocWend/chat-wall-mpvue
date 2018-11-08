@@ -18,16 +18,16 @@
     <chat-input :inputPlaceHolder="inputPlaceHolder"
                 :inputObj="inputObj"
                 :textMessage="textMessage"
-                :showVoicePart="true"></chat-input>
+                :showVoicePart="showVoicePart"></chat-input>
   </div>
 </template>
 <script>
 import vue from "vue";
 import { mapState, mapActions } from "vuex";
 import Toast from "@/../static/vant/toast/toast";
-import config from "../../config/config";
-import tools from "../../utils/tools";
-import weRequest from "../../utils/request";
+import config from "@/config/config";
+import tools from "@/utils/tools";
+import weRequest from "@/utils/request";
 import IMOperator from "./im-operator";
 import UI from "./ui";
 import MsgManager from "./msg-manager";
@@ -44,6 +44,7 @@ export default {
       textMessage: "",
       chatItems: [],
       latestPlayVoicePath: "",
+      showVoicePart: config.showVoicePart,
       isAndroid: true,
       chatStatue: "open",
       pageHeight: 0,
@@ -62,7 +63,6 @@ export default {
     ...mapState(["appInfo", "appIMDelegate"])
   },
   onLoad(options) {
-    console.error(this.appInfo)
     options.appInfo = this.appInfo;
     this.appIMDelegate.onShow(options);
 
@@ -77,17 +77,11 @@ export default {
     this.UI = new UI(this);
     this.msgManager = new MsgManager(this);
 
-    console.log('this.imOperator.onSimulateReceiveMsg')
-    console.log(this.imOperator.onSimulateReceiveMsg)
     this.imOperator.onSimulateReceiveMsg(msg => {
-      console.log('chat onSimulateReceiveMsg')
-      console.log(msg)
       this.msgManager.showMsg({ msg });
     });
 
     this.UI.updateChatStatus("正在聊天中...");
-    console.log("chat -this");
-    console.log(this);
   },
   methods: {
     initData() {
@@ -148,6 +142,8 @@ export default {
     //模拟上传文件，注意这里的cbOk回调函数传入的参数应该是上传文件成功时返回的文件url，这里因为模拟，我直接用的savedFilePath
     simulateUploadFile({ savedFilePath, duration, itemIndex, success, fail }) {
       this.upLoadPic(savedFilePath, (res) => {
+        res.data = res.data.replace(/http/g, 'https')
+        console.warn(res.data)
         let data = JSON.parse(res.data);
         if(data.msg === 'ok' && data.data.images) {
           // 返回所有图片
@@ -186,7 +182,7 @@ export default {
         title: '努力上传中...',
       }) 
       wx.uploadFile({
-        url: "https://api.berryapi.net/sina", //新浪微博图床
+        url: config.uploadPicUrl, //新浪微博图床
         filePath: path,
         name: "file",
         // formData: {
@@ -222,8 +218,6 @@ export default {
     },
     sendMsg({ content, itemIndex, success }) {
       // 发送消息后修改placeholder
-      console.log('content')
-      console.log(content)
       content &&
         content.type === "text" &&
         (this.inputPlaceHolder =
@@ -231,7 +225,6 @@ export default {
       this.imOperator.onSimulateSendMsg({
         content,
         success: msg => {
-          console.error(msg)
           this.UI.updateViewWhenSendSuccess(msg, itemIndex);
           success && success(msg);
         },

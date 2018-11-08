@@ -13,7 +13,6 @@ export default class VoiceManager extends FileManager {
     //在该类被初始化时，绑定语音点击播放事件
     this._page.chatVoiceItemClickEvent = (e) => {
       let dataset = e.currentTarget.dataset;
-      console.log('语音Item', dataset);
       this._playVoice({ dataset })
     }
   }
