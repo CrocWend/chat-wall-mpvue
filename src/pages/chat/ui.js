@@ -42,7 +42,6 @@ export default class UI {
     let obj = {};
     obj['textMessage'] = '';
     obj['chatItems'] = this._page.chatItems;
-    console.error(needScroll)
     needScroll && (obj['scrollTopVal'] = this._page.chatItems.length * 999);
     Object.assign(this._page, obj)
   }

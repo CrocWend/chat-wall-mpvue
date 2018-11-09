@@ -4,7 +4,7 @@ var online = {
     "port": "10000",
     "host": "",
     "socketUrl": "wss://chat.llllll.xyz/socket.io",
-    "apiUrl": "https://chat.llllll.xyz",
+    "apiUrl": "https://chat.llllll.xyz/nh",
     "uploadPicUrl": "https://api.berryapi.net/sina",
     "showVoicePart": "false",
 };
@@ -15,7 +15,7 @@ var local = {
     "host": "127.0.0.1",
     "port": "10000", //本地公网端口
     "socketUrl": "wss://127.0.0.1:10000",
-    "apiUrl": "https://127.0.0.1:10000",
+    "apiUrl": "https://127.0.0.1:10000/nh",
     "uploadPicUrl": "https://api.berryapi.net/sina",
     "showVoicePart": "false",
 };

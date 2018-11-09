@@ -16,7 +16,6 @@ export default {
   props: {
     chatInputExtraArr: Object
   },
-  computed: {},
   methods: {
     test1(e) {
       this.$emit("extraButtonClick", e);
@@ -38,7 +37,7 @@ export default {
   padding-top: 25rpx;
   height: 234rpx;
   width: 100%;
-  background-color: white;
+  background-color: rgba(0, 0, 0, 0.54);
 }
 
 .extra-image-size {
@@ -47,7 +46,7 @@ export default {
 }
 
 .extra-text-size {
-  color: #666666;
+  color: #fff;
   font-size: 24rpx;
   margin-top: 10rpx;
 }

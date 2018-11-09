@@ -1,12 +1,13 @@
 {
   "pages": [
     "pages/home/main",
-    "pages/chat/main"
+    "pages/chat/main",
+    "pages/login/main",
+    "pages/setting/main"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle": "black"
+    "backgroundTextStyle": "dark",
+    "navigationBarTitleText": "年会小程序",
+    "navigationBarTextStyle": "light"
   }
 }

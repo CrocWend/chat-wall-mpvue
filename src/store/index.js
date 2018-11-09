@@ -8,8 +8,46 @@ Vue.use(Vuex)
 // each Vuex instance is just a single state tree.
 const state = {
   appInfo: {},
+  systemInfo: {},
   count: 0,
   appIMDelegate: new AppIMDelegate(),
+  bcgImgIndex: 0,
+  bcgImg: "https://s1.ax1x.com/2018/11/09/iHLlPf.jpg",
+  barBgColor: "#393836",
+  bcgImgList: [
+    {
+      src: "https://s1.ax1x.com/2018/11/09/iHLlPf.jpg",
+      barBgColor: "#393836"
+    },
+    {
+      src: "https://s1.ax1x.com/2018/11/09/iHL1G8.jpg",
+      barBgColor: "#0085e5"
+    },
+    {
+      src: "https://s1.ax1x.com/2018/11/09/iHLtqs.jpg",
+      barBgColor: "#2d2225"
+    },
+    {
+      src: "https://s1.ax1x.com/2018/11/09/iHLYrj.jpg",
+      barBgColor: "#004a89"
+    },
+    {
+      src: "https://s1.ax1x.com/2018/11/09/iHL3RS.jpg",
+      barBgColor: "#b8bab9"
+    },
+    {
+      src: "https://s1.ax1x.com/2018/11/09/iHL8xg.jpg",
+      barBgColor: "#009ffe"
+    },
+    {
+      src: "https://s1.ax1x.com/2018/11/09/iHLJMQ.jpg",
+      barBgColor: "#d6d1e6"
+    },
+    {
+      src: "https://s1.ax1x.com/2018/11/09/iHLMIP.jpg",
+      barBgColor: "#ffa5bc"
+    }
+  ],
 }
 
 // mutations are operations that actually mutates the state.

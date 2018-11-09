@@ -100,6 +100,7 @@ export default {
       font-size: 24rpx;
       color: rgba(0, 0, 0, 0.26);
       margin-bottom: 16rpx;
+      line-height: 1;
     }
   }
 }

@@ -1,75 +1,63 @@
 <template>
+  <!-- 签到 -->
   <div class="container-home">
+
+    <img class="bcg"
+         v-if="bcgImg"
+         :src="bcgImg"
+         mode='aspectFill' />
     <!-- 签到模块 已签到不显示 -->
-    <div v-if="!isSign">
-      <div class="">留言会随机展示在大屏幕上哦</div>
-      <van-cell-group>
-        <div v-if="signWithPhoneNo">
-          <van-transition name="fade-up"
-                          show="signWithPhoneNo"
-                          custom-class="block">
-            <van-field :value="signPhone"
-                       required
-                       clearable
-                       label="手机号"
-                       type="number"
-                       icon="question"
-                       maxlength="11"
-                       title-width="70px"
-                       placeholder="请输入手机号"
-                       @clickIcon="onClickIcon"
-                       @input="bindPhoneInput" />
-          </van-transition>
-        </div>
-        <van-field :value="signMessage"
-                   required
-                   label="留言"
-                   type="text"
-                   title-width="70px"
-                   placeholder="留言啊啊"
-                   border="false"
-                   @input="bindContentInput" />
-      </van-cell-group>
-      <!-- 输入手机号模式 不再调用授权 -->
+    <div class="">留言会随机展示在大屏幕上哦</div>
+    <van-cell-group>
       <div v-if="signWithPhoneNo">
-        <van-button class="button"
-                    custom-class="button"
-                    size="large"
-                    type="primary"
-                    @click="sign()">手机号签到</van-button>
+        <van-transition name="fade-up"
+                        show="signWithPhoneNo"
+                        custom-class="block">
+          <van-field :value="signPhone"
+                     required
+                     clearable
+                     label="手机号"
+                     type="number"
+                     icon="question"
+                     maxlength="11"
+                     title-width="70px"
+                     placeholder="请输入手机号"
+                     @clickIcon="onClickIcon"
+                     @input="bindPhoneInput" />
+        </van-transition>
       </div>
-      <!-- 授权获取手机号 没留言 不可点击 -->
-      <div v-else-if="!signMessage">
-        <van-button disabled="true"
-                    class="button"
-                    custom-class="button"
-                    size="large"
-                    type="primary">先签到</van-button>
-      </div>
-      <div v-else>
-        <van-button class="button"
-                    custom-class="button"
-                    size="large"
-                    type="primary"
-                    open-type="getPhoneNumber"
-                    @getphonenumber="getPhoneNumber">先签到</van-button>
-      </div>
-    </div>
-    <!-- 加入群聊按钮 已签到显示 -->
-    <div v-else>
+      <van-field :value="signMessage"
+                 required
+                 label="留言"
+                 type="text"
+                 title-width="70px"
+                 placeholder="说点什么吧。。。"
+                 border="false"
+                 @input="bindContentInput" />
+    </van-cell-group>
+    <!-- 输入手机号模式 不再调用授权 -->
+    <div v-if="signWithPhoneNo">
       <van-button class="button"
-                  block
+                  custom-class="button"
                   size="large"
                   type="primary"
-                  open-type="getUserInfo"
-                  @getuserinfo="bindGetUserInfo">加入群聊</van-button>
-
-      <div class="button">
-        <van-button block
-                    size="large"
-                    @click="clear"
-                    type="primary">清除缓存</van-button>
-      </div>
+                  @click="sign()">手机号签到</van-button>
+    </div>
+    <!-- 授权获取手机号 没留言 不可点击 -->
+    <div v-else-if="!signMessage">
+      <van-button disabled="true"
+                  class="button"
+                  custom-class="button"
+                  size="large"
+                  type="primary">签到</van-button>
+    </div>
+    <div v-else>
+      <van-button class="button"
+                  custom-class="button"
+                  size="large"
+                  type="primary"
+                  open-type="getPhoneNumber"
+                  @getphonenumber="getPhoneNumber">签到</van-button>
     </div>
 
     <van-toast id="van-toast" />
@@ -79,10 +67,10 @@
 import { mapState, mapActions } from "vuex";
 
 import Toast from "@/../static/vant/toast/toast";
-import config from "../../config/config";
-import { msgPlaceholder } from "../../config/constant";
-import tools from "../../utils/tools";
-import weRequest from "../../utils/request";
+import config from "@/config/config";
+import { msgPlaceholder } from "@/config/constant";
+import tools from "@/utils/tools";
+import weRequest from "@/utils/request";
 import AppIMDelegate from "@/delegate/app-im-delegate";
 
 export default {
@@ -95,26 +83,17 @@ export default {
       isSign: false, // 是否签到
       // 留言占位信息
       msgPlaceholder:
-        msgPlaceholder[tools.getRandomNum(1, msgPlaceholder.length - 1)]
+        msgPlaceholder[tools.getRandomNum(1, msgPlaceholder.length - 1)],
     };
   },
   computed: {
-    ...mapState(["appInfo", "appIMDelegate"])
+    ...mapState(["appInfo", "appIMDelegate", "barBgColor", "bcgImg"])
   },
-
   onLoad() {
-    // wx.request({
-    //     url: config.apiUrl + "/userList",
-    //     data: {},
-    //     method: "POST",
-    //     header: {
-    //       "content-type": "application/json"
-    //     },
-    //     success: function(res) {
-    //       console.warn(res)
-    //     }
-    //   });
-    //   return;
+    wx.setNavigationBarColor({
+      frontColor: "#ffffff",
+      backgroundColor: this.barBgColor
+    });
     // 登录 获取session 存储到storage 用于解密数据
     weRequest.login(() => {
       // 登录之后的回调
@@ -124,10 +103,17 @@ export default {
     try {
       var value = wx.getStorageSync("appInfo");
       if (value) {
-        // 更新store
+        // 更新到store
         this.update({ appInfo: value });
-        // app.globalData.appInfo = value;
         this.isSign = value.isSign;
+        wx.reLaunch({
+          url: "../chat/main"
+        });
+      } else {
+        // 未签到跳转到登录页
+        wx.reLaunch({
+          url: "../login/main"
+        });
       }
     } catch (e) {
       // Do something when catch error
@@ -135,14 +121,6 @@ export default {
   },
   methods: {
     ...mapActions(["update"]),
-    clear() {
-      try {
-        wx.clearStorageSync();
-        Toast("清理成功");
-      } catch (e) {
-        // Do something when catch error
-      }
-    },
     onClickIcon() {
       Toast("输入的手机号和员工信息保持一致");
     },
@@ -151,9 +129,6 @@ export default {
     },
     bindContentInput: function(e) {
       this.signMessage = e.mp.detail;
-    },
-    bindGetUserInfo(e) {
-      this.joinRoom(this.appInfo.phone, e.mp.detail.userInfo);
     },
     /**
      * 获取用户手机号
@@ -197,57 +172,14 @@ export default {
       });
     },
     /**
-     * 加入群聊
-     */
-    joinRoom(phone, userInfo) {
-      let self = this;
-      wx.request({
-        url: config.apiUrl + "/joinRoom",
-        data: {
-          phone: phone,
-          nickName: encodeURIComponent(userInfo.nickName),
-          gender: userInfo.gender,
-          avatarUrl: userInfo.avatarUrl
-        },
-        method: "POST",
-        header: {
-          "content-type": "application/json" // 默认值
-        },
-        success(res) {
-          // 登录成功跳转聊天页面
-          if (res.data.result) {
-            console.log("设置头像等信息");
-            var appInfo = Object.assign(self.appInfo, userInfo);
-
-            self.update({ appInfo });
-
-            try {
-              var value = wx.getStorageSync("appInfo");
-              if (value) {
-                // 本地存储
-                try {
-                  wx.setStorageSync("appInfo", Object.assign(value, appInfo));
-                } catch (e) {}
-              }
-            } catch (e) {
-              // Do something when catch error
-            }
-
-            wx.navigateTo({
-              url: "../chat/main"
-            });
-          }
-        }
-      });
-    },
-    /**
      * 优先使用验证手机号签到
      * 签到失败 使用用户输入手机号
      */
     sign(phone) {
-      var self = this;
-      var signPhone = self.signPhone;
-      var signMessage = self.signMessage;
+      let self = this;
+      let signPhone = self.signPhone;
+      let signMessage = self.signMessage;
+      let appInfo = self.appInfo;
       // 手动输入模式
       if (self.signWithPhoneNo) {
         phone = signPhone;
@@ -265,7 +197,10 @@ export default {
         url: config.apiUrl + "/sign",
         data: {
           phone: phone, // 签到手机号
-          message: signMessage // 留言内容
+          message: signMessage, // 留言内容
+          nickName: encodeURIComponent(appInfo.nickName),
+          gender: appInfo.gender,
+          avatarUrl: appInfo.avatarUrl
         },
         method: "POST",
         header: {
@@ -278,16 +213,22 @@ export default {
             self.isSign = true;
 
             // 设置全局属性
-            let appInfo = {
+            let signObj = {
               phone,
               userId: data.items[0].employeeid,
               isSign: true
             };
-            self.update({ appInfo });
+
+            let newAppInfo = Object.assign(appInfo, signObj);
+
+            self.update({ appInfo: newAppInfo });
             // 设置本地存储
             try {
-              wx.setStorageSync("appInfo", appInfo);
+              wx.setStorageSync("appInfo", newAppInfo);
             } catch (e) {}
+            wx.redirectTo({
+              url: "../chat/main"
+            });
           } else {
             // 签到失败 可能是手机号不匹配 用户自己输入
             self.signWithPhoneNo = true;
@@ -300,12 +241,35 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style lang="scss">
+page {
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  font-family: "PingHei", "Helvetica Neue", "Helvetica", "Arial", "Verdana",
+    "sans-serif";
+}
+// 签到样式
 .container-home {
   padding: 50rpx 30rpx 0;
-}
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 
-.button {
-  margin: 30rpx 0;
+  .bcg {
+    position: fixed;
+    // z-index: 2;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    /* background: #40a7e7; */
+    /* background: linear-gradient(to bottom, #73C6F1, #50B5EC); */
+  }
+
+  .button {
+    margin: 30rpx 0;
+  }
 }
 </style>

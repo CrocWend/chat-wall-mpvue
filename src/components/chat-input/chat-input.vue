@@ -44,8 +44,7 @@
   </div>
 </template>
 <script>
-import * as chatInputTools from "@/components/chat-input/chat-input-tools";
-
+import { mapState } from "vuex";
 import tools from "@/utils/tools";
 import IMOperator from "@/pages/chat/im-operator";
 
@@ -63,8 +62,8 @@ export default {
     ExtraPart,
     ChatVoice
   },
-  onLoad() {},
   computed: {
+    ...mapState(["barBgColor"]),
     keyboardOrVoicePic() {
       return `/static/image/chat/voice/${
         this.inputObj.inputStatus === "voice" ? "keyboard" : "voice"
@@ -105,7 +104,7 @@ input {
 .input-text-voice-super {
   display: flex;
   flex-direction: row;
-  background-color: white;
+  // background-color: white;
   width: 100%;
   align-items: center;
   height: 100rpx;

@@ -1,24 +1,31 @@
 <template>
-  <div class="container-chat">
-    <chat-status :chatStatue="chatStatue"
-                 :chatStatusContent="chatStatusContent"></chat-status>
+  <div class="container-chat"
+       @click.stop="hideMenus">
+    <!-- <chat-status :chatStatue="chatStatue"
+                 :chatStatusContent="chatStatusContent"></chat-status> -->
+    <img class="bcg"
+         :src="bcgImg"
+         mode='aspectFill' />
     <scroll-view class="scroll-view"
                  :style="{'height':pageHeight+'px'}"
                  scroll-y="true"
                  :scroll-top="scrollTopVal"
                  @click="resetInputStatus">
-      <!-- <div v-for="item in chatItems" :key="index"> -->
       <chat-item v-for="(item, index) in chatItems"
                  :item="item"
                  :length="chatItems.length"
                  :index="index"
                  :key="index"></chat-item>
-      <!-- </div> -->
+      <!-- 底部占位 -->
+      <div class="bottom-block"></div>
+      <animation-menus ref="menus"></animation-menus>
     </scroll-view>
     <chat-input :inputPlaceHolder="inputPlaceHolder"
                 :inputObj="inputObj"
                 :textMessage="textMessage"
                 :showVoicePart="showVoicePart"></chat-input>
+    <van-toast id="van-toast" />
+
   </div>
 </template>
 <script>
@@ -37,6 +44,7 @@ import * as chatInputTools from "@/components/chat-input/chat-input-tools";
 import ChatStatus from "@/components/chat-page/chat-status";
 import ChatItem from "@/components/chat-page/chat-item";
 import ChatInput from "@/components/chat-input/chat-input";
+import AnimationMenus from "@/components/menus/menus";
 export default {
   mpType: "page",
   data() {
@@ -57,12 +65,25 @@ export default {
   components: {
     ChatItem,
     ChatStatus,
-    ChatInput
+    ChatInput,
+    AnimationMenus
   },
   computed: {
-    ...mapState(["appInfo", "appIMDelegate"])
+    ...mapState([
+      "appInfo",
+      "systemInfo",
+      "barBgColor",
+      "bcgImg",
+      "appIMDelegate"
+    ])
   },
   onLoad(options) {
+    // 设置bar颜色
+    wx.setNavigationBarColor({
+      frontColor: "#ffffff",
+      backgroundColor: this.barBgColor
+    });
+
     options.appInfo = this.appInfo;
     this.appIMDelegate.onShow(options);
 
@@ -84,17 +105,18 @@ export default {
     this.UI.updateChatStatus("正在聊天中...");
   },
   methods: {
+    hideMenus() {
+      this.$refs.menus.menuHide();
+    },
     initData() {
       let self = this;
-      let systemInfo = wx.getSystemInfoSync();
-      console.log(systemInfo)
       chatInputTools.init(this, {
-        systemInfo: systemInfo,
+        systemInfo: this.systemInfo,
         minVoiceTime: 1,
         maxVoiceTime: 60,
         startTimeDown: 56,
         format: "mp3", //aac/mp3
-        sendButtonBgColor: "mediumseagreen",
+        sendButtonBgColor: this.barBgColor,
         sendButtonTextColor: "white",
         extraArr: [
           {
@@ -113,8 +135,8 @@ export default {
         // tabbarHeigth: 48
       });
 
-      this.pageHeight = systemInfo.windowHeight;
-      this.isAndroid = systemInfo.system.indexOf("Android") !== -1;
+      this.pageHeight = this.systemInfo.windowHeight;
+      this.isAndroid = this.systemInfo.system.indexOf("Android") !== -1;
 
       self.textButton();
       self.extraButton();
@@ -141,15 +163,15 @@ export default {
     },
     //模拟上传文件，注意这里的cbOk回调函数传入的参数应该是上传文件成功时返回的文件url，这里因为模拟，我直接用的savedFilePath
     simulateUploadFile({ savedFilePath, duration, itemIndex, success, fail }) {
-      this.upLoadPic(savedFilePath, (res) => {
-        res.data = res.data.replace(/http/g, 'https')
-        console.warn(res.data)
+      this.upLoadPic(savedFilePath, res => {
+        res.data = res.data.replace(/http/g, "https");
+        console.warn(res.data);
         let data = JSON.parse(res.data);
-        if(data.msg === 'ok' && data.data.images) {
+        if (data.msg === "ok" && data.data.images) {
           // 返回所有图片
           success && success(data.data.images);
         }
-      })
+      });
     },
     extraButton() {
       let self = this;
@@ -168,7 +190,6 @@ export default {
               type: IMOperator.ImageType,
               content: res.tempFilePaths[0]
             });
-            
           }
         });
       });
@@ -179,8 +200,8 @@ export default {
     },
     upLoadPic(path, success, fail) {
       wx.showLoading({
-        title: '努力上传中...',
-      }) 
+        title: "努力上传中..."
+      });
       wx.uploadFile({
         url: config.uploadPicUrl, //新浪微博图床
         filePath: path,
@@ -189,11 +210,11 @@ export default {
         //   user: "test"
         // },
         success(res) {
-          wx.hideLoading()
+          wx.hideLoading();
           success && success(res);
         },
         fail(error) {
-          fail &&fail(error);
+          fail && fail(error);
         }
       });
     },
@@ -222,16 +243,16 @@ export default {
         content.type === "text" &&
         (this.inputPlaceHolder =
           inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]),
-      this.imOperator.onSimulateSendMsg({
-        content,
-        success: msg => {
-          this.UI.updateViewWhenSendSuccess(msg, itemIndex);
-          success && success(msg);
-        },
-        fail: () => {
-          this.UI.updateViewWhenSendFailed(itemIndex);
-        }
-      });
+        this.imOperator.onSimulateSendMsg({
+          content,
+          success: msg => {
+            this.UI.updateViewWhenSendSuccess(msg, itemIndex);
+            success && success(msg);
+          },
+          fail: () => {
+            this.UI.updateViewWhenSendFailed(itemIndex);
+          }
+        });
     },
     /**
      * 重发消息
@@ -249,14 +270,29 @@ export default {
 <style lang="scss" scoped>
 .container-chat {
   background-color: #efefef;
-
+  .bcg {
+    position: fixed;
+    // z-index: 2;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    /* background: #40a7e7; */
+    /* background: linear-gradient(to bottom, #73C6F1, #50B5EC); */
+  }
   .scroll-view {
     width: 100%;
     display: flex;
     flex-direction: column;
-    margin-top: 54rpx;
+    // margin-top: 54rpx;
     // 解决安卓scroll-view滑动卡顿
-    -webkit-overflow-scrolling:touch;
+    -webkit-overflow-scrolling: touch;
+    .bottom-block {
+      width: 100%;
+      height: 200rpx;
+    }
   }
 }
 </style>
