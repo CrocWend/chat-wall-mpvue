@@ -83,7 +83,7 @@ export default {
       isSign: false, // 是否签到
       // 留言占位信息
       msgPlaceholder:
-        msgPlaceholder[tools.getRandomNum(1, msgPlaceholder.length - 1)],
+        msgPlaceholder[tools.getRandomNum(1, msgPlaceholder.length - 1)]
     };
   },
   computed: {
@@ -99,28 +99,29 @@ export default {
       // 登录之后的回调
     });
 
-    // 进入页面从本地获取是否签到 已签到 isSign true 不显示签到模块
-    try {
-      var value = wx.getStorageSync("appInfo");
-      if (value) {
-        // 更新到store
-        this.update({ appInfo: value });
-        this.isSign = value.isSign;
-        wx.reLaunch({
-          url: "../chat/main"
-        });
-      } else {
+    // 进入页面从本地获取appInfo
+    wx.getStorage({
+      key: "appInfo",
+      success: res => {
+        // 已签到 更新到store
+        if (res.data.isSign) {
+          wx.reLaunch({
+            url: "../chat/main"
+          });
+          this.update({ appInfo: res.data });
+          this.isSign = true;
+        }
+      },
+      fail: res => {
         // 未签到跳转到登录页
         wx.reLaunch({
           url: "../login/main"
         });
       }
-    } catch (e) {
-      // Do something when catch error
-    }
+    });
   },
   methods: {
-    ...mapActions(["update"]),
+    ...mapActions(["update", "getEncryptData"]),
     onClickIcon() {
       Toast("输入的手机号和员工信息保持一致");
     },
@@ -144,33 +145,11 @@ export default {
       }
 
       // 调用解密接口 拿到手机号签到
-      this.getEncryptData(e.mp.detail, phoneNumber => {
-        this.sign(phoneNumber);
+      this.getEncryptData(e.mp.detail).then(res => {
+        this.sign(res.phoneNumber);
       });
     },
-    /**
-     * 解密手机号信息
-     * 使用保存的session
-     */
-    getEncryptData(detail, callback) {
-      var session_key = wx.getStorageSync("session_key");
-      wx.request({
-        url: config.apiUrl + "/encryptPhoneData",
-        data: {
-          encryptedData: detail.encryptedData,
-          iv: detail.iv,
-          session_key: session_key
-        },
-        method: "POST",
-        header: {
-          "content-type": "application/json"
-        },
-        success: function(res) {
-          var data = res.data;
-          callback(data.phoneNumber);
-        }
-      });
-    },
+
     /**
      * 优先使用验证手机号签到
      * 签到失败 使用用户输入手机号
@@ -180,6 +159,7 @@ export default {
       let signPhone = self.signPhone;
       let signMessage = self.signMessage;
       let appInfo = self.appInfo;
+      console.log(appInfo)
       // 手动输入模式
       if (self.signWithPhoneNo) {
         phone = signPhone;
@@ -197,10 +177,11 @@ export default {
         url: config.apiUrl + "/sign",
         data: {
           phone: phone, // 签到手机号
-          message: signMessage, // 留言内容
+          signMessage: encodeURIComponent(signMessage), // 留言内容
           nickName: encodeURIComponent(appInfo.nickName),
           gender: appInfo.gender,
-          avatarUrl: appInfo.avatarUrl
+          avatarUrl: appInfo.avatarUrl,
+          openid: appInfo.openid
         },
         method: "POST",
         header: {

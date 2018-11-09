@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex'
 import AppIMDelegate from "../delegate/app-im-delegate";
+import config from '@/config/config'
 
 Vue.use(Vuex)
 
@@ -91,7 +92,60 @@ const actions = {
         reslove()
       }, 1000)
     })
-  }
+  },
+  /**
+   * 解密信息
+   * 使用保存的session 和返回的详细信息
+   */
+  getEncryptData({ commit, state }, detail) {
+    return new Promise((reslove, reject) => {
+      var session_key = wx.getStorageSync("session_key");
+      wx.request({
+        url: config.apiUrl + "/encryptWxData",
+        data: {
+          encryptedData: detail.encryptedData,
+          iv: detail.iv,
+          session_key: session_key
+        },
+        method: "POST",
+        header: {
+          "content-type": "application/json"
+        },
+        success: function (res) {
+          var data = res.data;
+          console.log('store lll res')
+          console.log(res)
+          reslove(data);
+        },
+        fail: function(res) {
+          reject(res);
+        }
+      });
+    })
+  },
+  getUserList({ commit, state }, openId) {
+    return new Promise((reslove, reject) => {
+      wx.request({
+        url: config.apiUrl + "/userList",
+        data: {
+          openId
+        },
+        method: "POST",
+        header: {
+          "content-type": "application/json"
+        },
+        success: function (res) {
+          var data = res.data;
+          console.log('store getuserList')
+          console.log(res)
+          reslove(data);
+        },
+        fail: function(res) {
+          reject(res);
+        }
+      });
+    })
+  },
 }
 
 

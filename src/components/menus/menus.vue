@@ -52,29 +52,22 @@ export default {
       if (page.indexOf("home") !== -1) {
         Toast("已经是首页了");
       } else {
-        this.menuHide();
+        this.menuMain();
         wx.navigateTo({
-          url: "../home/main",
-          success: () => {}
+          url: "../home/main"
         });
       }
     },
     menuToSetting() {
-      Toast("开发中");
-      return;
-      this.menuHide();
+      this.menuMain();
       wx.navigateTo({
-        url: "../setting/main",
-        success: () => {}
+        url: "../setting/main"
       });
     },
     menuToResult() {
-      Toast("开发中");
-      return;
-      this.menuHide();
+      this.menuMain();
       wx.navigateTo({
-        url: "../result/main",
-        success: () => {}
+        url: "../result/main"
       });
     },
     menuHide() {

@@ -9,7 +9,8 @@ VantComponent({
     size: {
       type: String,
       value: '30px'
-    }
+    },
+    backgroundColor: String,
   },
   watch: {
     checked: function checked(value) {

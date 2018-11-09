@@ -104,7 +104,7 @@ input {
 .input-text-voice-super {
   display: flex;
   flex-direction: row;
-  // background-color: white;
+  background-color: rgba(0,0,0,0.54);
   width: 100%;
   align-items: center;
   height: 100rpx;
