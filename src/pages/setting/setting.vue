@@ -225,7 +225,6 @@ export default {
         justify-content: flex-end;
         align-items: center;
         .setting-switch {
-
         }
       }
       .more {

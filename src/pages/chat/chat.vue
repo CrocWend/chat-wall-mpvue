@@ -2,7 +2,8 @@
   <div class="container-chat"
        @click.stop="hideMenus">
     <!-- <chat-status :chatStatue="chatStatue"
-                 :chatStatusContent="chatStatusContent"></chat-status> -->
+                 :chatStatusContent="chatSt
+                 atusContent"></chat-status> -->
     <img class="bcg"
          :src="bcgImg"
          mode='aspectFill' />
@@ -77,15 +78,24 @@ export default {
       "appIMDelegate"
     ])
   },
+  // 页面隐藏关闭socket
+  onHide() {
+    this.appIMDelegate.iIMHandler.closeConnection();
+  },
+  // 页面显示连接socket
+  onShow() {
+    // 获取聊天历史记录 最近10条
+
+    // 进入群聊清空记录 重新连接
+    this.chatItems = [];
+    this.appIMDelegate.onShow({ appInfo: this.appInfo });
+  },
   onLoad(options) {
     // 设置bar颜色
     wx.setNavigationBarColor({
       frontColor: "#ffffff",
       backgroundColor: this.barBgColor
     });
-
-    options.appInfo = this.appInfo;
-    this.appIMDelegate.onShow(options);
 
     this.initData();
     this.imOperator = new IMOperator(this, {
@@ -101,8 +111,15 @@ export default {
     this.imOperator.onSimulateReceiveMsg(msg => {
       this.msgManager.showMsg({ msg });
     });
-
-    this.UI.updateChatStatus("正在聊天中...");
+  },
+  watch: {
+    // 监听聊天记录条数 只保留20条
+    chatItems(val, oldVal) {
+      if (oldVal.length === 30) {
+        val.splice(0, 10);
+        console.log(val.length);
+      }
+    }
   },
   methods: {
     hideMenus() {

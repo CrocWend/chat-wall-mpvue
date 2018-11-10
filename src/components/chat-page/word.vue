@@ -6,7 +6,7 @@
          :src="item.headUrl" />
     <div class="message"
          :style="{'align-items': item.isMy?'flex-end':'flex-start'}">
-      <span class="nick-name">{{item.nickName}}</span>
+      <div class="nick-name">{{item.nickName}}</div>
       <!-- 消息的箭头icon -->
       <!-- <img v-if="item.type==='text'||item.type==='voice'"
           class="chat-list-arrow-style"
@@ -98,9 +98,15 @@ export default {
     flex-direction: column;
     .nick-name {
       font-size: 24rpx;
-      color: rgba(0, 0, 0, 0.26);
+      max-width: 300rpx;
+      color: rgba(0, 0, 0, 0.87);
       margin-bottom: 16rpx;
       line-height: 1;
+      white-space: nowrap;
+      word-wrap: break-word;
+      word-break:break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }
@@ -121,16 +127,15 @@ export default {
   // margin-left: 14rpx;
   word-wrap: break-word;
   &::after {
-    content: ' ';
+    content: " ";
     position: absolute;
-    top: 50%;
+    top: 26rpx;
     right: -8rpx;
     width: 0rpx;
     height: 0rpx;
     border-top: 10rpx solid transparent;
     border-left: 10rpx solid #8fcbf7;
     border-bottom: 10rpx solid transparent;
-    transform: translateY(-50%);
   }
 }
 
@@ -141,16 +146,15 @@ export default {
   // margin-left: -1rpx;
   word-wrap: break-word;
   &::after {
-    content: ' ';
+    content: " ";
     position: absolute;
-    top: 50%;
+    top: 26rpx;
     left: -8rpx;
     width: 0rpx;
     height: 0rpx;
     border-top: 10rpx solid transparent;
     border-right: 10rpx solid #fff;
     border-bottom: 10rpx solid transparent;
-    transform: translateY(-50%);
   }
 }
 

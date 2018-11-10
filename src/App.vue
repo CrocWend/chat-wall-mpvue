@@ -67,11 +67,7 @@ export default {
     });
 
     this.appIMDelegate.onLaunch(options);
-  },
-  onHide() {
-    this.appIMDelegate.onHide();
-  },
-  onShow(options) {}
+  }
 };
 </script>
 <style lang="scss">
