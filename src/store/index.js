@@ -9,6 +9,7 @@ Vue.use(Vuex)
 // each Vuex instance is just a single state tree.
 const state = {
   appInfo: {},
+  setting: {},
   systemInfo: {},
   count: 0,
   appIMDelegate: new AppIMDelegate(),
@@ -81,6 +82,7 @@ const actions = {
 
   },
   incrementIfOdd({ commit, state }) {
+    console.log(111)
     if ((state.count + 1) % 2 === 0) {
       commit('increment')
     }
@@ -112,10 +114,7 @@ const actions = {
           "content-type": "application/json"
         },
         success: function (res) {
-          var data = res.data;
-          console.log('store lll res')
-          console.log(res)
-          reslove(data);
+          reslove(res.data);
         },
         fail: function(res) {
           reject(res);
@@ -144,6 +143,40 @@ const actions = {
           reject(res);
         }
       });
+    })
+  },
+  initSetting ({ commit, state }) {
+    wx.getStorage({
+      key: 'setting',
+      success: (res) => {
+        let setting = res.data || {}
+        commit('update', {setting});
+        actions.checkUpdate(setting);
+      },
+      fail: () => {
+        commit('update', {setting: {}});
+      },
+    })
+  },
+  checkUpdate (setting) {
+    // 兼容低版本
+    if (!setting.forceUpdate || !wx.getUpdateManager) {
+      return
+    }
+    let updateManager = wx.getUpdateManager()
+    updateManager.onCheckForUpdate((res) => {
+      console.error(res)
+    })
+    updateManager.onUpdateReady(function () {
+      wx.showModal({
+        title: '更新提示',
+        content: '新版本已下载完成，是否重启应用？',
+        success: function (res) {
+          if (res.confirm) {
+            updateManager.applyUpdate()
+          }
+        }
+      })
     })
   },
 }

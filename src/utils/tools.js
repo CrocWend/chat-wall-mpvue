@@ -51,6 +51,30 @@ function setBarColorUseStorage(isApp, bcgImgList) {
     });
 }
 
-exports.getRandomNum = getRandomNum;
-exports.setNavigationBarColor = setNavigationBarColor;
-exports.setBarColorUseStorage = setBarColorUseStorage;
+// 比较版本号：left > right 1, left < right -1, left == right 0
+// 用途：旧版本不执行写入、删除 日历操作
+function cmpVersion(left, right) {
+    if (typeof left + typeof right !== 'stringstring') {
+        return false
+    }
+    let a = left.split('.')
+    let b = right.split('.')
+    let i = 0
+    let len = Math.max(a.length, b.length)
+    for (; i < len; i++) {
+        if ((a[i] && !b[i] && parseInt(a[i]) > 0) || (parseInt(a[i]) > parseInt(b[i]))) {
+            return 1
+        } else if ((b[i] && !a[i] && parseInt(b[i]) > 0) || (parseInt(a[i]) < parseInt(b[i]))) {
+            return -1
+        }
+    }
+    return 0
+}
+
+
+export default {
+    getRandomNum,
+    setNavigationBarColor,
+    setBarColorUseStorage,
+    cmpVersion
+  }

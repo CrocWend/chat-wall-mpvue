@@ -115,8 +115,11 @@ export default {
   watch: {
     // 监听聊天记录条数 只保留20条
     chatItems(val, oldVal) {
-      if (oldVal.length === 30) {
+      console.warn('聊天条数------------'+oldVal.length)
+      console.log('聊天条数---items---------'+this.chatItems.length)
+      if (!(oldVal.length < 30)) {
         val.splice(0, 10);
+        // this.chatItems = val;
         console.log(val.length);
       }
     }
