@@ -13,9 +13,10 @@ export default class UI {
    * @param msg
    */
   updateViewWhenReceive(msg) {
+    this._page.allChatLength += 1;
     this._page.chatItems.push(msg);
     this._page.chatItems = this._page.chatItems.sort(UI._sortMsgListByTimestamp)
-    this._page.scrollTopVal = this._page.chatItems.length * 999
+    this._page.autoScrollToLower();
   }
 
   /**
@@ -36,13 +37,16 @@ export default class UI {
    * @param needScroll
    */
   updateDataWhenStartSending(sendMsg, addToArr = true, needScroll = true) {
+    this._page.allChatLength += 1;
     closeExtraView();
     sendMsg.sendStatus = 'sending';
     addToArr && this._page.chatItems.push(sendMsg);
     let obj = {};
-    obj['textMessage'] = '';
+    // if(sendMsg.isMy) {
+    //   obj['textMessage'] = '';
+    // }
     obj['chatItems'] = this._page.chatItems;
-    needScroll && (obj['scrollTopVal'] = this._page.chatItems.length * 999);
+    needScroll && this._page.autoScrollToLower();
     Object.assign(this._page, obj)
   }
 
@@ -53,8 +57,7 @@ export default class UI {
    */
   updateViewWhenSendSuccess(sendMsg, itemIndex) {
     console.log('发送成功', sendMsg);
-    let that = this._page;
-    let item = that.chatItems[itemIndex];
+    let item = this._page.chatItems[itemIndex];
     item.timestamp = sendMsg.timestamp;
     item.largePic = sendMsg.largePic;
     item.content = sendMsg.content;
@@ -75,11 +78,11 @@ export default class UI {
   }
 
   updateSendStatusView(status, itemIndex) {
-    let that = this._page;
-    that.chatItems[itemIndex].sendStatus = status;
+    let self = this._page;
+    self.chatItems[itemIndex].sendStatus = status;
     let obj = {};
     obj[`chatItems[${itemIndex}].sendStatus`] = status;
-    Object.assign(that, obj)
+    Object.assign(self, obj)
   }
 
   updateChatStatus(content, open = true) {

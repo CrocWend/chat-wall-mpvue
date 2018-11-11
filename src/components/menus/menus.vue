@@ -1,27 +1,29 @@
 <template>
-    <!-- 悬浮菜单 -->
-    <div class='menus'>
-        <img src="/static/image/bg/menu_home.png"
-             :animation="animationOne"
-             @click.stop="menuToHome"
-             class="menu" />
-        <!-- <button plain='true'
+  <!-- 悬浮菜单 -->
+  <div class='menus'>
+    <img src="/static/image/bg/menu_home.png"
+         :animation="animationOne"
+         @click.stop="menuToHome"
+         class="menu" />
+    <!-- <button plain='true'
               open-type='share'
               :animation="animationOne"
               class='menu share'></button> -->
-        <img src="/static/image/bg/menu_setting.png"
-             :animation="animationTwo"
-             class="menu"
-             @click.stop="menuToSetting">
-        <img src="/static/image/bg/menu_info.png"
-             :animation="animationThree"
-             class="menu"
-             @click.stop="menuToResult" />
-        <img src="/static/image/bg/menu.png"
-             :animation="animationMain"
-             class="menu main"
-             @click.stop="menuMain">
-    </div>
+    <img src="/static/image/bg/menu_setting.png"
+         :animation="animationTwo"
+         class="menu"
+         @click.stop="menuToSetting">
+    <img src="/static/image/bg/menu_info.png"
+         :animation="animationThree"
+         class="menu"
+         @click.stop="menuToResult" />
+    <img src="/static/image/bg/menu.png"
+         :animation="animationMain"
+         class="menu main"
+         @click.stop="menuMain">
+    <!-- 菜单遮罩层 -->
+    <div class="menu-layer" v-if="hasPopped"></div>
+  </div>
 </template>
 <script>
 import Toast from "@/../static/vant/toast/toast";
@@ -184,6 +186,14 @@ export default {
 }
 .menus .main {
   opacity: 1;
+}
+.menu-layer {
+  position: fixed;
+  left: 0;
+  right:0;
+  top: 0;
+  bottom:0;
+  background: rgba(0, 0, 0, 0.26);
 }
 </style>
 

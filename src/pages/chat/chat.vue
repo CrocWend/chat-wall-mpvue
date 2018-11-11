@@ -11,6 +11,10 @@
                  :style="{'height':pageHeight+'px'}"
                  scroll-y="true"
                  :scroll-top="scrollTopVal"
+                 scroll-with-animation="true"
+                 @scroll="onScroll"
+                 @scrolltoupper="onScrollToUpper"
+                 @scrolltolower="onScrollToLower"
                  @click="resetInputStatus">
       <chat-item v-for="(item, index) in chatItems"
                  :item="item"
@@ -18,9 +22,12 @@
                  :index="index"
                  :key="index"></chat-item>
       <!-- 底部占位 -->
-      <div class="bottom-block"></div>
-      <animation-menus ref="menus"></animation-menus>
+      <div class="bottom-block" :style="{'height':inputObj.extraObj.chatInputShowExtra ? '400rpx' :'200rpx'}"></div>
     </scroll-view>
+
+    <!-- 菜单 -->
+    <animation-menus ref="menus"></animation-menus>
+    
     <chat-input :inputPlaceHolder="inputPlaceHolder"
                 :inputObj="inputObj"
                 :textMessage="textMessage"
@@ -51,7 +58,9 @@ export default {
   data() {
     return {
       textMessage: "",
+      isDragScrollView: false,// 是否拖动scrollview
       chatItems: [],
+      allChatLength: 0,
       latestPlayVoicePath: "",
       showVoicePart: config.showVoicePart,
       isAndroid: true,
@@ -85,10 +94,10 @@ export default {
   // 页面显示连接socket
   onShow() {
     // 获取聊天历史记录 最近10条
-
-    // 进入群聊清空记录 重新连接
-    this.chatItems = [];
+    
     this.appIMDelegate.onShow({ appInfo: this.appInfo });
+
+    
   },
   onLoad(options) {
     // 设置bar颜色
@@ -96,7 +105,6 @@ export default {
       frontColor: "#ffffff",
       backgroundColor: this.barBgColor
     });
-
     this.initData();
     this.imOperator = new IMOperator(this, {
       appInfo: this.appInfo,
@@ -107,24 +115,43 @@ export default {
     });
     this.UI = new UI(this);
     this.msgManager = new MsgManager(this);
-
+    let self = this;
     this.imOperator.onSimulateReceiveMsg(msg => {
+      console.log('self.textMessage')
+      console.log(self.textMessage)
       this.msgManager.showMsg({ msg });
     });
   },
   watch: {
     // 监听聊天记录条数 只保留20条
     chatItems(val, oldVal) {
-      console.warn('聊天条数------------'+oldVal.length)
-      console.log('聊天条数---items---------'+this.chatItems.length)
+      console.error('####################')
+      console.log(this.allChatLength)
+      console.log('val.length')
+      console.log(val.length)
+      console.log(oldVal.length)
       if (!(oldVal.length < 30)) {
         val.splice(0, 10);
-        // this.chatItems = val;
-        console.log(val.length);
       }
     }
   },
   methods: {
+    // 自动滚动到底部
+    autoScrollToLower() {
+      this.scrollTopVal = this.allChatLength * 999
+      
+    },
+    onScroll(event) {
+      let deltaY = event.mp.detail.deltaY;
+
+      console.log(deltaY)
+    },
+    onScrollToUpper() {
+      console.log('onScrollToUpper')
+    },
+    onScrollToLower() {
+      console.log('onScrollToLower')
+    },
     hideMenus() {
       this.$refs.menus.menuHide();
     },
@@ -185,7 +212,6 @@ export default {
     simulateUploadFile({ savedFilePath, duration, itemIndex, success, fail }) {
       this.upLoadPic(savedFilePath, res => {
         res.data = res.data.replace(/http/g, "https");
-        console.warn(res.data);
         let data = JSON.parse(res.data);
         if (data.msg === "ok" && data.data.images) {
           // 返回所有图片
@@ -309,9 +335,9 @@ export default {
     // margin-top: 54rpx;
     // 解决安卓scroll-view滑动卡顿
     -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
     .bottom-block {
       width: 100%;
-      height: 200rpx;
     }
   }
 }

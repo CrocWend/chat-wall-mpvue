@@ -1,0 +1,147 @@
+<template>
+  <div class="container-system">
+    <div class="brand">
+      <img class="img"
+           src='/static/image/bg/mobile.png' />
+      <span class="text">{{systemInfo.brand}}</span>
+    </div>
+    <div class="system-item"
+         v-for="(item, index) in systeminfoArr"
+         :key="index">
+      <div class='key'>{{item.name}}</div>
+      <div class='value'>{{systemInfo[item.key]}}</div>
+    </div>
+
+  </div>
+
+</template>
+<script>
+import { mapState, mapActions } from "vuex";
+import Toast from "@/../static/vant/toast/toast";
+import tools from "@/utils/tools";
+export default {
+  mpType: "page",
+  data() {
+    return {
+      systeminfoArr: [
+        {
+          key: "brand",
+          name: "手机品牌"
+        },
+        {
+          key: "model",
+          name: "手机型号"
+        },
+        {
+          key: "pixelRatio",
+          name: "设备像素比"
+        },
+        {
+          key: "screenWidth",
+          name: "屏幕宽度"
+        },
+        {
+          key: "screenHeight",
+          name: "屏幕高度"
+        },
+        {
+          key: "windowWidth",
+          name: "可使用窗口宽度"
+        },
+        {
+          key: "windowHeight",
+          name: "可使用窗口高度"
+        },
+        {
+          key: "statusBarHeight",
+          name: "状态栏高度"
+        },
+        {
+          key: "language",
+          name: "微信设置的语言"
+        },
+        {
+          key: "version",
+          name: "微信版本号"
+        },
+        {
+          key: "system",
+          name: "操作系统版本"
+        },
+        {
+          key: "platform",
+          name: "客户端平台"
+        },
+        {
+          key: "fontSizeSetting",
+          name: "用户字体大小设置(px)"
+        },
+        {
+          key: "SDKVersion",
+          name: "客户端基础库版本"
+        }
+      ]
+    };
+  },
+  onShow() {},
+  onLoad() {
+    // 设置bar颜色
+    wx.setNavigationBarColor({
+      frontColor: "#ffffff",
+      backgroundColor: this.barBgColor
+    });
+  },
+  computed: {
+    ...mapState(["barBgColor", "systemInfo"])
+  }
+};
+</script>
+<style lang="scss" scoped>
+.container-system {
+  padding: 0 30rpx 0 30rpx;
+  background: #fff;
+  margin-bottom: 20rpx;
+  .brand {
+    font-family: DINCondensed-Bold;
+    height: 300rpx;
+    font-size: 100rpx;
+    color: #40a7e7;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    .img {
+      width: 100rpx;
+      height: 100rpx;
+      margin-right: 20rpx;
+    }
+    .text {
+      line-height: 1em;
+    }
+  }
+
+  .system-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 30rpx;
+    color: #000;
+    padding: 30rpx 15rpx;
+    height: 62rpx;
+    border-top: 1rpx solid #efefef;
+    &:last-child {
+      border-bottom: none;
+    }
+    .key {
+      line-height: 1em;
+    }
+    .value {
+      font-size: 24rpx;
+      line-height: 1em;
+      color: #777;
+    }
+  }
+}
+</style>
+

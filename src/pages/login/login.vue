@@ -24,6 +24,7 @@
 import { mapState, mapActions } from "vuex";
 import Toast from "@/../static/vant/toast/toast";
 import tools from "@/utils/tools";
+import weRequest from "@/utils/request";
 
 export default {
   mpType: "page",
@@ -31,6 +32,14 @@ export default {
     return {};
   },
   onLoad() {
+    wx.getStorage({
+      key: "session_key",
+      success: res => {},
+      fail: () => {
+        // 登录 获取session
+        weRequest.login();
+      }
+    });
     // 设置bar颜色
     wx.setNavigationBarColor({
       frontColor: "#ffffff",
@@ -38,49 +47,53 @@ export default {
     });
   },
   computed: {
-    ...mapState(["barBgColor"])
+    ...mapState(["appInfo", "barBgColor"])
   },
   methods: {
     ...mapActions(["update", "getEncryptData", "getUserList"]),
     onRefuse() {
       Toast("需要授权才能继续使用服务");
     },
-    isSign(openId, callback) {
-      this.getUserList(openId).then(res => {
-        callback && callback(!!res.items.length);
+    saveStorage(key, value, success) {
+      console.log(key)
+      this.update({ [key]: value });
+      wx.setStorage({
+        key: key,
+        data: value,
+        success: () => {
+          success && success();
+        }
+      });
+    },
+    isSign(appInfo) {
+      this.getUserList(appInfo.openId).then(res => {
+        // 已经签到
+        if (!!res.items.length) {
+          appInfo.isSign = true;
+
+          this.saveStorage("appInfo", appInfo, () => {
+            wx.navigateTo({
+              url: "../chat/main"
+            });
+          });
+        } else {
+          this.saveStorage("appInfo", appInfo, () => {
+            wx.reLaunch({
+              url: "../home/main"
+            });
+          });
+        }
       });
     },
     bindGetUserInfo(e) {
       let detail = e.mp.detail;
-      let userInfo = detail.userInfo;
+      let appInfo = detail.userInfo;
 
       // 获取加密数据
       this.getEncryptData(detail).then(res => {
-        let openId = res.openId;
-        userInfo.openId = res.openId;
+        appInfo.openId = res.openId;
 
-        // 获取数据后 本地存储 更新store
-        this.update({ appInfo: userInfo });
-        wx.getStorage({
-          key: "appInfo",
-          success: res => {},
-          fail: () => {
-            wx.setStorageSync("appInfo", userInfo);
-          }
-        });
-
-        // 检查是否签到 跳转到对应页面
-        this.isSign(openId, isSign => {
-          if (isSign) {
-            wx.reLaunch({
-              url: "../chat/main"
-            });
-          } else {
-            wx.reLaunch({
-              url: "../home/main"
-            });
-          }
-        });
+        this.isSign(appInfo);
       });
     }
   }

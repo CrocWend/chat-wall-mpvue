@@ -1,7 +1,7 @@
 <template>
   <div class="container-setting">
     <!-- 检查更新 -->
-    <div class="setting-item">
+    <!-- <div class="setting-item">
       <div class="title"
            :style="{'color': barBgColor}">检查更新</div>
       <div class="content">
@@ -14,7 +14,7 @@
                    src="/static/image/bg/question.png" />
               <text v-if="setting.enableUpdate">在首页检测到新版本，会提示更新</text>
               <text v-else
-                    style="flex:1;">基础库版本需高于 1.9.90，当前基础库版本为 {{systeminfo.SDKVersion}}</text>
+                    style="flex:1;">基础库版本需高于 1.9.90，当前基础库版本为 {{systemInfo.SDKVersion}}</text>
             </div>
           </div>
           <div class="right">
@@ -26,14 +26,14 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- 小工具 -->
     <div class="setting-item">
       <div class="title"
            :style="{'color': barBgColor}">小工具</div>
 
-      <div class="content sub">
+      <!-- <div class="content sub">
         <div class="sub-title"
              :style="{'color': barBgColor}">NFC</div>
         <div class="item"
@@ -42,20 +42,20 @@
           <img class="more"
                src="/static/image/bg/arrow.png" />
         </div>
-      </div>
+      </div> -->
 
       <div class="content sub">
-        <div class="sub-title"
-             :style="{'color': barBgColor}">屏幕亮度</div>
-        <div class="item">
+        <!-- <div class="sub-title"
+             :style="{'color': barBgColor}">屏幕亮度</div> -->
+        <!-- <div class="item">
           <div class="left">
             <div class="text">当前屏幕亮度</div>
             <div class="tip">范围0~100，0 最暗，100 最亮</div>
           </div>
           <div class="right">{{screenBrightness}}</div>
-        </div>
+        </div> -->
 
-        <div class="item"
+        <!-- <div class="item"
              @click.stop="setScreenBrightness">
           <div class="left"
                style="width:100%">
@@ -71,7 +71,7 @@
                     @change="screenBrightnessChanging"
                     @changing="screenBrightnessChanging"></slider>
           </div>
-        </div>
+        </div> -->
 
         <div class="item">
           <div class="left">
@@ -87,17 +87,19 @@
           </div>
         </div>
 
-        <div class="content sub">
+        <!-- <div class="content sub">
           <div class="sub-title"
                :style="{'color': barBgColor}">系统信息</div>
-          <div class="item">
+          <div class="item"
+               @click.stop="toSystemInfo">
             <div class="left">
               <div class="text">查看系统信息</div>
             </div>
-            <div class="right">{{screenBrightness}}</div>
+            <img class="more"
+                 src="/static/image/bg/arrow.png" />
           </div>
 
-        </div>
+        </div> -->
 
       </div>
 
@@ -108,11 +110,12 @@
       <div class="title"
            :style="{'color': barBgColor}">清除数据</div>
       <div class="content">
-        <div class="item">
+        <div class="item"
+             @click.stop='removeStorage'
+             data-type='setting'>
           <div class="left">
             <div class="text">恢复初始化设置</div>
-            <div class="tip"
-                 @click.stop="updateInstruc">
+            <div class="tip">
               <img class="img"
                    src="/static/image/bg/danger.png" />
               <text>所有设置信息都将被清除</text>
@@ -124,11 +127,12 @@
           </div>
         </div>
 
-        <div class="item">
+        <div class="item"
+             @click.stop='removeStorage'
+             data-type='all'>
           <div class="left">
             <div class="text">清除所有本地数据</div>
-            <div class="tip"
-                 @click.stop="updateInstruc">
+            <div class="tip">
               <img class="img"
                    src="/static/image/bg/danger.png" />
               <text>所有本地数据都将被清除</text>
@@ -157,23 +161,22 @@ export default {
         enableUpdate: true,
         keepscreenon: false
       },
-      screenBrightness: "获取中",
-      
+      screenBrightness: "获取中"
     };
   },
   onShow() {
     this.ifDisableUpdate();
-    this.getScreenBrightness()
+    this.getScreenBrightness();
     wx.getStorage({
-      key: 'setting',
-      success: (res) => {
-        let setting = res.data
-        this.update({setting})
+      key: "setting",
+      success: res => {
+        let setting = res.data;
+        this.update({ setting });
       },
-      fail: (res) => {
-        this.update({setting: {}})
-      },
-    })
+      fail: res => {
+        this.update({ setting: {} });
+      }
+    });
   },
   onLoad() {
     // 设置bar颜色
@@ -187,11 +190,9 @@ export default {
   },
   methods: {
     ...mapActions(["update", "initSetting"]),
-    clear() {
-      Toast("清理成功");
-      // 清理后跳转登录
-      wx.reLaunch({
-        url: "../login/main"
+    toSystemInfo() {
+      wx.navigateTo({
+        url: "../system/main"
       });
     },
     getHCEState() {
@@ -247,20 +248,20 @@ export default {
       wx.setKeepScreenOn({
         keepScreenOn: flag,
         success: () => {
-          console.log('设置常亮')
-          this.$set(this.setting, 'keepscreenon', flag);
+          console.log("设置常亮");
+          this.$set(this.setting, "keepscreenon", flag);
         }
       });
     },
     removeStorage(e) {
-      let that = this;
+      let self = this;
       let datatype = e.currentTarget.dataset.type;
       if (datatype === "setting") {
         wx.showModal({
           title: "提示",
           content: "确认要初始化设置",
           cancelText: "容朕想想",
-          confirmColor: "#40a7e7",
+          confirmColor: this.barBgColor,
           success: res => {
             if (res.confirm) {
               wx.removeStorage({
@@ -269,10 +270,10 @@ export default {
                   wx.showToast({
                     title: "设置已初始化"
                   });
-                  that.setData({
-                    setting: {}
-                  });
-                  that.data.indexPage.reloadInitSetting();
+
+                  self.setting = {};
+                  self.update({ setting: {} });
+                  self.initSetting();
                 }
               });
             }
@@ -283,7 +284,7 @@ export default {
           title: "提示",
           content: "确认要删除",
           cancelText: "容朕想想",
-          confirmColor: "#40a7e7",
+          confirmColor: this.barBgColor,
           success(res) {
             if (res.confirm) {
               wx.clearStorage({
@@ -291,11 +292,13 @@ export default {
                   wx.showToast({
                     title: "数据已清除"
                   });
-                  that.setData({
-                    setting: {},
-                    pos: {}
+                  self.setting = {};
+                  self.update({ setting: {} });
+                  self.initSetting();
+                  // 清理后跳转登录
+                  wx.reLaunch({
+                    url: "../login/main"
                   });
-                  that.data.indexPage.reloadInitSetting();
                 }
               });
             }
@@ -304,11 +307,10 @@ export default {
       }
     },
     switchChange(e) {
-      console.log(e);
       let dataset = e.currentTarget.dataset;
       let switchparam = dataset.switchparam;
       if (switchparam === "forceUpdate") {
-        if (this.enableUpdate) {
+        if (this.setting.enableUpdate) {
           this.$set(this.setting, switchparam, e.mp.detail);
         } else {
           this.$set(this.setting, switchparam, false);
@@ -334,14 +336,11 @@ export default {
       });
     },
     ifDisableUpdate() {
-      let SDKVersion = this.systemInfo.SDKVersion;
-      let version = tools.cmpVersion(SDKVersion, "1.9.90");
+      let version = tools.cmpVersion(this.systemInfo.SDKVersion, "1.9.90");
       if (version >= 0) {
-        this.SDKVersion = SDKVersion;
-        this.enableUpdate = true;
+        this.$set(this.setting, "enableUpdate", true);
       } else {
-        this.SDKVersion = SDKVersion;
-        this.enableUpdate = false;
+        this.$set(this.setting, "enableUpdate", false);
       }
     }
   }

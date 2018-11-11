@@ -1,6 +1,7 @@
 <button
   id="{{ id }}"
   lang="{{ lang }}"
+  style="background-color: {{ backgroundColor}};"
   class="custom-class van-button {{ classes }}"
   open-type="{{ openType }}"
   app-parameter="{{ appParameter }}"

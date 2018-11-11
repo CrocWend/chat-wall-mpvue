@@ -49,6 +49,7 @@
                   class="button"
                   custom-class="button"
                   size="large"
+                  :backgroundColor="barBgColor"
                   type="primary">签到</van-button>
     </div>
     <div v-else>
@@ -56,6 +57,7 @@
                   custom-class="button"
                   size="large"
                   type="primary"
+                  :backgroundColor="barBgColor"
                   open-type="getPhoneNumber"
                   @getphonenumber="getPhoneNumber">签到</van-button>
     </div>
@@ -70,7 +72,6 @@ import Toast from "@/../static/vant/toast/toast";
 import config from "@/config/config";
 import { msgPlaceholder } from "@/config/constant";
 import tools from "@/utils/tools";
-import weRequest from "@/utils/request";
 import AppIMDelegate from "@/delegate/app-im-delegate";
 
 export default {
@@ -90,14 +91,13 @@ export default {
     ...mapState(["appInfo", "appIMDelegate", "barBgColor", "bcgImg"])
   },
   onLoad() {
+    console.warn('this.appInfo')
+    console.warn(this.appInfo)
     wx.setNavigationBarColor({
       frontColor: "#ffffff",
       backgroundColor: this.barBgColor
     });
-    // 登录 获取session 存储到storage 用于解密数据
-    weRequest.login(() => {
-      // 登录之后的回调
-    });
+    
 
     // 进入页面从本地获取appInfo
     wx.getStorage({
@@ -181,7 +181,7 @@ export default {
           nickName: encodeURIComponent(appInfo.nickName),
           gender: appInfo.gender,
           avatarUrl: appInfo.avatarUrl,
-          openid: appInfo.openid
+          openId: appInfo.openId
         },
         method: "POST",
         header: {
@@ -199,9 +199,10 @@ export default {
               userId: data.items[0].employeeid,
               isSign: true
             };
-
+            console.error(appInfo)
             let newAppInfo = Object.assign(appInfo, signObj);
-
+            console.error('newAppInfo')
+            console.error(newAppInfo)
             self.update({ appInfo: newAppInfo });
             // 设置本地存储
             try {
@@ -251,6 +252,7 @@ page {
 
   .button {
     margin: 30rpx 0;
+    border: 0;
   }
 }
 </style>

@@ -18,7 +18,8 @@ VantComponent({
     size: {
       type: String,
       value: 'normal'
-    }
+    },
+    backgroundColor: String,
   },
   computed: {
     classes: function classes() {

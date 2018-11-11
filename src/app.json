@@ -3,7 +3,8 @@
     "pages/home/main",
     "pages/chat/main",
     "pages/login/main",
-    "pages/setting/main"
+    "pages/setting/main",
+    "pages/system/main"
   ],
   "window": {
     "backgroundTextStyle": "dark",

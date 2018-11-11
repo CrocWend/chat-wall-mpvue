@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import tools from "@/utils/tools";
+import weRequest from "@/utils/request";
 
 export default {
   computed: {
@@ -25,6 +26,11 @@ export default {
   },
   onLaunch(options) {
     console.log('onLaunch')
+    // 登录 获取session 存储到storage 用于解密数据
+    weRequest.login(() => {
+      // 登录之后的回调
+    });
+
     // 设置bar颜色 isApp
     wx.getStorage({
       key: "bcgImgIndex",
@@ -35,7 +41,7 @@ export default {
         this.setNavigationBar(bcgImgIndex, barBgColor, bcgImg);
       },
       fail: () => {
-        let randomIndex = tools.getRandomNum(0, 7);
+        let randomIndex = tools.getRandomNum(0, this.bcgImgList.length-1);
 
         let bcgImgIndex = randomIndex;
         let barBgColor = this.bcgImgList[bcgImgIndex].barBgColor;

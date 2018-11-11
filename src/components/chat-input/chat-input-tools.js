@@ -425,13 +425,13 @@ function setTextMessageListener(cb) {
       if (!!inputObj.inputValueEventTemp && !!inputObj.inputValueEventTemp.mp.detail.value) {
         typeof cb === "function" && cb(JSON.parse(JSON.stringify(inputObj.inputValueEventTemp)));
       }
-
       _page.textMessage = ''
       _page.$set(_page.inputObj, 'inputType', 'none')
       inputObj.inputValueEventTemp = null;
 
     }
     _page.chatInputGetValueEvent = function (e) {
+      _page.textMessage = e.mp.detail.value
       inputObj.inputValueEventTemp = e;
     }
   }
