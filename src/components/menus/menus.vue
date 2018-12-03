@@ -1,28 +1,21 @@
 <template>
   <!-- 悬浮菜单 -->
   <div class='menus'>
-    <img src="/static/image/bg/menu_home.png"
-         :animation="animationOne"
-         @click.stop="menuToHome"
-         class="menu" />
-    <!-- <button plain='true'
-              open-type='share'
-              :animation="animationOne"
-              class='menu share'></button> -->
-    <img src="/static/image/bg/menu_setting.png"
+    <img src="/static/image/bg/menu_info.png"
          :animation="animationTwo"
          class="menu"
-         @click.stop="menuToSetting">
-    <img src="/static/image/bg/menu_info.png"
+         @click.stop="menuToLottery" />
+    <img src="/static/image/bg/menu_setting.png"
          :animation="animationThree"
          class="menu"
-         @click.stop="menuToResult" />
+         @click.stop="menuToSetting">
     <img src="/static/image/bg/menu.png"
          :animation="animationMain"
          class="menu main"
          @click.stop="menuMain">
     <!-- 菜单遮罩层 -->
-    <div class="menu-layer" v-if="hasPopped"></div>
+    <div class="menu-layer"
+         v-if="hasPopped"></div>
   </div>
 </template>
 <script>
@@ -47,29 +40,16 @@ export default {
       let url = currentPage.route; //当前页面url
       return url;
     },
-    menuToHome() {
-      Toast("开发中");
-      return;
-      let page = this.getCurrentPage();
-      if (page.indexOf("home") !== -1) {
-        Toast("已经是首页了");
-      } else {
-        this.menuMain();
-        wx.navigateTo({
-          url: "../home/main"
-        });
-      }
-    },
     menuToSetting() {
       this.menuMain();
       wx.navigateTo({
         url: "../setting/main"
       });
     },
-    menuToResult() {
+    menuToLottery() {
       this.menuMain();
       wx.navigateTo({
-        url: "../result/main"
+        url: "../lottery/main"
       });
     },
     menuHide() {
@@ -190,9 +170,9 @@ export default {
 .menu-layer {
   position: fixed;
   left: 0;
-  right:0;
+  right: 0;
   top: 0;
-  bottom:0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.26);
 }
 </style>

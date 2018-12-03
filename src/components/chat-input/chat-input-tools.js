@@ -370,7 +370,8 @@ function checkRecordAuth(cbOk, cbError) {
 }
 
 function closeExtraView() {
-  _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra', false)
+  console.log(_page)
+  // _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra', false)
 }
 
 function delayDismissCancelView() {
@@ -408,9 +409,12 @@ function setTextMessageListener(cb) {
       _page.$set(_page.inputObj, 'inputType', 'text')
     };
     _page.chatInputBindBlurEvent = function () {
+      console.log('chatInputBindBlurEvent')
+      console.log(inputObj.inputValueEventTemp)
       setTimeout(() => {
-        if (!inputObj.inputValueEventTemp || !inputObj.inputValueEventTemp.mp.detail.value) {
+        if (!inputObj.inputValueEventTemp || !inputObj.inputValueEventTemp.detail.value) {
           inputObj.inputValueEventTemp = null;
+          console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%')
           _page.$set(_page.inputObj, 'inputType', 'none')
         }
         _page.$set(_page.inputObj.extraObj, 'chatInputShowExtra', false)
@@ -422,7 +426,7 @@ function setTextMessageListener(cb) {
       inputObj.inputValueEventTemp = null;
     };
     _page.chatInputSendTextMessage02 = function () {
-      if (!!inputObj.inputValueEventTemp && !!inputObj.inputValueEventTemp.mp.detail.value) {
+      if (!!inputObj.inputValueEventTemp && !!inputObj.inputValueEventTemp.detail.value) {
         typeof cb === "function" && cb(JSON.parse(JSON.stringify(inputObj.inputValueEventTemp)));
       }
       _page.textMessage = ''
@@ -431,8 +435,9 @@ function setTextMessageListener(cb) {
 
     }
     _page.chatInputGetValueEvent = function (e) {
-      _page.textMessage = e.mp.detail.value
-      inputObj.inputValueEventTemp = e;
+      console.log(e.mp.detail.value)
+      // _page.textMessage = e.mp.detail.value
+      inputObj.inputValueEventTemp = e.mp;
     }
   }
 }

@@ -13,12 +13,28 @@
 </template>
 <script>
 export default {
-  props: {
-    chatInputExtraArr: Object
+  data() {
+    return {
+      chatInputExtraArr: [
+        {
+          picName: "choose_picture",
+          description: "照片"
+        },
+        {
+          picName: "take_photos",
+          description: "拍摄"
+        },
+        {
+          picName: "close_chat",
+          description: "自定义功能"
+        }
+      ]
+    };
   },
   methods: {
     test1(e) {
-      this.$emit("extraButtonClick", e);
+      console.log(e)
+      // this.$emit("extraButtonClick", e);
     }
   }
 };

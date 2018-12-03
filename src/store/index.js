@@ -8,6 +8,13 @@ Vue.use(Vuex)
 // root state object.
 // each Vuex instance is just a single state tree.
 const state = {
+  inputObj: {
+    chatInputShowExtra: false,
+    textMessage: "",
+    inputStatus: "text",
+    inputType: "",
+    showVoicePart: false,
+  },
   appInfo: {},
   setting: {},
   systemInfo: {},
@@ -49,9 +56,13 @@ const mutations = {
    */
   update(state, config) {
     console.log('----------state')
-    console.log(config)
     Object.keys(config).map((item, key) => {
       state[item] = config[item]
+    })
+  },
+  updateInputObj(state, config) {
+    Object.keys(config).map((item, key) => {
+      state["inputObj"][item] = config[item]
     })
   },
 }
@@ -61,6 +72,10 @@ const mutations = {
 const actions = {
   update: ({ commit }, config) => {
     commit('update', config);
+
+  },
+  updateInputObj: ({ commit }, config) => {
+    commit('updateInputObj', config);
 
   },
   incrementIfOdd({ commit, state }) {

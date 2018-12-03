@@ -27,6 +27,8 @@ export default class IIMHandler {
      * @param fail 发送失败回调
      */
     sendMsg({content, success, fail}) {
+        console.log('this._isLogin')
+        console.log(this._isLogin)
         if (this._isLogin) {
             this._sendMsgImp({content, success, fail});
         } else {

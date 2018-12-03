@@ -1,6 +1,6 @@
 <template>
   <div class="container-chat"
-       @click.stop="hideMenus">
+       @click="hideMenus">
     <!-- <chat-status :chatStatue="chatStatue"
                  :chatStatusContent="chatSt
                  atusContent"></chat-status> -->
@@ -8,7 +8,7 @@
          :src="bcgImg"
          mode='aspectFill' />
     <scroll-view class="scroll-view"
-                 :style="{'height':pageHeight+'px'}"
+                 :style="{'height':systemInfo.windowHeight+'px'}"
                  scroll-y="true"
                  :scroll-top="scrollTopVal"
                  scroll-with-animation="true"
@@ -22,16 +22,13 @@
                  :index="index"
                  :key="index"></chat-item>
       <!-- 底部占位 -->
-      <div class="bottom-block" :style="{'height':inputObj.extraObj.chatInputShowExtra ? '400rpx' :'200rpx'}"></div>
+      <div class="bottom-block" :style="{'height':inputObj.chatInputShowExtra ? '400rpx' :'200rpx'}"></div>
     </scroll-view>
 
     <!-- 菜单 -->
     <animation-menus ref="menus"></animation-menus>
     
-    <chat-input :inputPlaceHolder="inputPlaceHolder"
-                :inputObj="inputObj"
-                :textMessage="textMessage"
-                :showVoicePart="showVoicePart"></chat-input>
+    <chat-input :inputPlaceHolder="inputPlaceHolder" @sendMsgSuper="sendMsgSuper"></chat-input>
     <van-toast id="van-toast" />
 
   </div>
@@ -57,7 +54,6 @@ export default {
   mpType: "page",
   data() {
     return {
-      textMessage: "",
       isDragScrollView: false,// 是否拖动scrollview
       chatItems: [],
       allChatLength: 0,
@@ -65,9 +61,7 @@ export default {
       showVoicePart: config.showVoicePart,
       isAndroid: true,
       chatStatue: "open",
-      pageHeight: 0,
       scrollTopVal: 0,
-      inputObj: {},
       inputPlaceHolder:
         inputPlaceHolder[tools.getRandomNum(1, inputPlaceHolder.length - 1)]
     };
@@ -80,6 +74,7 @@ export default {
   },
   computed: {
     ...mapState([
+      "inputObj",
       "appInfo",
       "systemInfo",
       "barBgColor",
@@ -105,7 +100,7 @@ export default {
       frontColor: "#ffffff",
       backgroundColor: this.barBgColor
     });
-    this.initData();
+    // this.initData();
     this.imOperator = new IMOperator(this, {
       appInfo: this.appInfo,
       timeStr: "",
@@ -117,8 +112,8 @@ export default {
     this.msgManager = new MsgManager(this);
     let self = this;
     this.imOperator.onSimulateReceiveMsg(msg => {
-      console.log('self.textMessage')
-      console.log(self.textMessage)
+      console.log("2333333333333")
+      console.log(msg)
       this.msgManager.showMsg({ msg });
     });
   },
@@ -126,7 +121,6 @@ export default {
     // 监听聊天记录条数 只保留20条
     chatItems(val, oldVal) {
       console.error('####################')
-      console.log(this.allChatLength)
       console.log('val.length')
       console.log(val.length)
       console.log(oldVal.length)
@@ -136,6 +130,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["updateInputObj"]),
     // 自动滚动到底部
     autoScrollToLower() {
       this.scrollTopVal = this.allChatLength * 999
@@ -154,46 +149,55 @@ export default {
     },
     hideMenus() {
       this.$refs.menus.menuHide();
+      this.updateInputObj({"chatInputShowExtra": false})
     },
     initData() {
       let self = this;
-      chatInputTools.init(this, {
-        systemInfo: this.systemInfo,
-        minVoiceTime: 1,
-        maxVoiceTime: 60,
-        startTimeDown: 56,
-        format: "mp3", //aac/mp3
-        sendButtonBgColor: this.barBgColor,
-        sendButtonTextColor: "white",
-        extraArr: [
-          {
-            picName: "choose_picture",
-            description: "照片"
-          },
-          {
-            picName: "take_photos",
-            description: "拍摄"
-          },
-          {
-            picName: "close_chat",
-            description: "自定义功能"
-          }
-        ]
-        // tabbarHeigth: 48
-      });
+      // chatInputTools.init(this, {
+      //   systemInfo: this.systemInfo,
+      //   minVoiceTime: 1,
+      //   maxVoiceTime: 60,
+      //   startTimeDown: 56,
+      //   format: "mp3", //aac/mp3
+      //   sendButtonBgColor: this.barBgColor,
+      //   sendButtonTextColor: "white",
+      //   extraArr: [
+      //     {
+      //       picName: "choose_picture",
+      //       description: "照片"
+      //     },
+      //     {
+      //       picName: "take_photos",
+      //       description: "拍摄"
+      //     },
+      //     {
+      //       picName: "close_chat",
+      //       description: "自定义功能"
+      //     }
+      //   ]
+      //   // tabbarHeigth: 48
+      // });
 
       this.pageHeight = this.systemInfo.windowHeight;
       this.isAndroid = this.systemInfo.system.indexOf("Android") !== -1;
 
       self.textButton();
       self.extraButton();
-      self.voiceButton();
+      // self.voiceButton();
+    },
+    sendMsgSuper(msgObj) {
+      console.log('chat send content')
+      this.msgManager.sendMsg(msgObj);
     },
     textButton() {
-      chatInputTools.setTextMessageListener(e => {
-        let content = e.mp.detail.value;
-        this.msgManager.sendMsg({ type: IMOperator.TextType, content });
-      });
+      // chatInputTools.setTextMessageListener(e => {
+      //   let content = e.mp.detail.value;
+      //   this.msgManager.sendMsg({ type: IMOperator.TextType, content });
+      // });
+      console.log('this.inputObj')
+      console.log(this)
+      console.log(this.inputObj)
+      
     },
     voiceButton() {
       chatInputTools.recordVoiceListener((res, duration) => {
@@ -284,6 +288,8 @@ export default {
       chatInputTools.closeExtraView();
     },
     sendMsg({ content, itemIndex, success }) {
+      console.log("--------------")
+      console.log(content)
       // 发送消息后修改placeholder
       content &&
         content.type === "text" &&
@@ -292,6 +298,8 @@ export default {
         this.imOperator.onSimulateSendMsg({
           content,
           success: msg => {
+            console.log("------gengxin--------")
+            console.log(msg)
             this.UI.updateViewWhenSendSuccess(msg, itemIndex);
             success && success(msg);
           },

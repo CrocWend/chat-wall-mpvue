@@ -1,4 +1,4 @@
-import App from './system'
+import App from './lottery'
 import Vue from 'vue'
 
 const app = new Vue(App)

@@ -129,7 +129,7 @@ export default {
   &::after {
     content: " ";
     position: absolute;
-    top: 26rpx;
+    top: 20rpx;
     right: -8rpx;
     width: 0rpx;
     height: 0rpx;
@@ -148,7 +148,7 @@ export default {
   &::after {
     content: " ";
     position: absolute;
-    top: 26rpx;
+    top: 20rpx;
     left: -8rpx;
     width: 0rpx;
     height: 0rpx;

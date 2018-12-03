@@ -1,5 +1,5 @@
 <template>
-  <div :class="index===length-1? 'chat-item last-child': 'chat-item'">
+  <div class="chat-item">
     <chat-time v-if="item.type ==='custom'"
                :data="item.content"></chat-time>
     <chat-time v-else-if="item.type==='LOGIN' || item.type==='LOGOUT'"
@@ -37,8 +37,5 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  // &.last-child {
-  //   margin-bottom: 200rpx;
-  // }
 }
 </style>

@@ -13,10 +13,14 @@ export default class UI {
    * @param msg
    */
   updateViewWhenReceive(msg) {
+    console.log('updateViewWhenReceive')
+    
     this._page.allChatLength += 1;
     this._page.chatItems.push(msg);
     this._page.chatItems = this._page.chatItems.sort(UI._sortMsgListByTimestamp)
     this._page.autoScrollToLower();
+    
+
   }
 
   /**
@@ -38,16 +42,19 @@ export default class UI {
    */
   updateDataWhenStartSending(sendMsg, addToArr = true, needScroll = true) {
     this._page.allChatLength += 1;
-    closeExtraView();
+    console.log('updateDataWhenStartSending')
+    // closeExtraView();
+    console.log(this._page)
     sendMsg.sendStatus = 'sending';
     addToArr && this._page.chatItems.push(sendMsg);
-    let obj = {};
+    // let obj = {};
     // if(sendMsg.isMy) {
     //   obj['textMessage'] = '';
     // }
-    obj['chatItems'] = this._page.chatItems;
+    // obj['chatItems'] = this._page.chatItems;
     needScroll && this._page.autoScrollToLower();
-    Object.assign(this._page, obj)
+    // Object.assign(this._page, obj)
+    this._page.$set(this._page, 'chatItems',  this._page.chatItems)
   }
 
   /**
@@ -78,19 +85,12 @@ export default class UI {
   }
 
   updateSendStatusView(status, itemIndex) {
-    let self = this._page;
-    self.chatItems[itemIndex].sendStatus = status;
-    let obj = {};
-    obj[`chatItems[${itemIndex}].sendStatus`] = status;
-    Object.assign(self, obj)
+    this._page.$set(this._page.chatItems[itemIndex], 'sendStatus',  status)
   }
 
   updateChatStatus(content, open = true) {
-
-    Object.assign(this._page, {
-      chatStatue: open ? 'open' : 'close',
-      chatStatusContent: content
-    })
+    this._page.$set(this._page, 'chatStatue',  open ? 'open' : 'close')
+    this._page.$set(this._page, 'chatStatusContent',  content)
   }
 
   static _sortMsgListByTimestamp(item1, item2) {

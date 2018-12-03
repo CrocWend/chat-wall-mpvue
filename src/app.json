@@ -4,11 +4,20 @@
     "pages/chat/main",
     "pages/login/main",
     "pages/setting/main",
-    "pages/system/main"
+    "pages/lottery/main"
   ],
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarTitleText": "年会小程序",
     "navigationBarTextStyle": "light"
+  },
+  "usingComponents": {
+    "van-button": "/static/vant/button/index",
+    "van-toast": "/static/vant/toast/index",
+    "van-field": "/static/vant/field/index",
+    "van-switch": "/static/vant/switch/index",
+    "van-icon": "/static/vant/icon/index",
+    "van-cell": "/static/vant/cell/index",
+    "van-cell-group": "/static/vant/cell-group/index"
   }
 }

@@ -1,24 +1,24 @@
 <template>
   <div class="chat-input">
     <div class="input-text-voice-super">
-      <block v-if="showVoicePart === 'true'">
+      <!-- <block v-if="showVoicePart === 'true'">
         <img class="extra-btn-style"
              @click="this.$parent.changeInputWayEvent"
              :src="keyboardOrVoicePic" />
         <chat-voice v-if="inputObj.inputStatus==='voice'"
                     :voiceObj="inputObj.voiceObj"
                     :canUsePress="inputObj.canUsePress"></chat-voice>
-      </block>
+      </block> -->
 
       <input v-if="inputObj.inputStatus==='text'"
              class="chat-input-style"
-             :style="{'margin-left':showVoicePart==='true'?0:'16rpx'}"
+             :style="{'margin-left':inputObj.showVoicePart==='true'?0:'16rpx'}"
              :placeholder="inputPlaceHolder"
-             :value="textMessage"
-             @confirm="this.$parent.chatInputSendTextMessage"
-             @focus="this.$parent.chatInputBindFocusEvent"
-             @blur="this.$parent.chatInputBindBlurEvent"
-             @input="this.$parent.chatInputGetValueEvent"
+             v-model="inputObj.textMessage"
+             @confirm="chatInputSendTextMessage"
+             @focus="chatInputBindFocusEvent"
+             @blur="chatInputBindBlurEvent"
+             
              confirm-hold
              maxlength="500"
              confirm-type="send"
@@ -26,25 +26,24 @@
       <!-- 右侧按钮 -->
       <div hover-class="press-style-opacity">
         <div v-if="inputObj.inputType==='text'"
-              class="chat-input-send-button-style"
-              :style="{'background-color': inputObj.inputStyle.sendButtonBgColor, 'color': inputObj.inputStyle.sendButtonTextColor}"
-              @click="this.$parent.chatInputSendTextMessage02">发送</div>
+             class="chat-input-send-button-style"
+             :style="{'background-color': barBgColor, 'color': '#fff'}"
+             @click="chatInputSendTextMessage">发送</div>
         <img v-else
-              class="extra-btn-style"
-              @click="this.$parent.chatInputExtraClickEvent"
+             class="extra-btn-style"
+             @click.stop="chatInputExtraClickEvent"
              src="/static/image/chat/extra.png" />
       </div>
     </div>
     <!-- 扩展 -->
-    <block v-if="inputObj.extraObj.chatInputShowExtra">
+    <block v-if="inputObj.chatInputShowExtra">
       <view class="list-divide-line"></view>
-      <extra-part @extraButtonClick="this.$parent.chatInputExtraItemClickEvent"
-                  :chatInputExtraArr="inputObj.extraObj.chatInputExtraArr"></extra-part>
+      <extra-part @extraButtonClick="chatInputExtraItemClickEvent"></extra-part>
     </block>
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import tools from "@/utils/tools";
 import IMOperator from "@/pages/chat/im-operator";
 
@@ -54,16 +53,17 @@ import ChatVoice from "@/components/chat-input/chat-voice";
 export default {
   props: {
     inputPlaceHolder: String,
-    inputObj: Object,
-    textMessage: String,
-    showVoicePart: String
+  },
+  onLoad() {
+    console.log("chat-input")
+    console.log(this.inputObj)
   },
   components: {
     ExtraPart,
     ChatVoice
   },
   computed: {
-    ...mapState(["barBgColor"]),
+    ...mapState(["barBgColor", "inputObj"]),
     keyboardOrVoicePic() {
       return `/static/image/chat/voice/${
         this.inputObj.inputStatus === "voice" ? "keyboard" : "voice"
@@ -71,9 +71,34 @@ export default {
     }
   },
   methods: {
-    test() {
-      console.log(this);
-    }
+    ...mapActions(["updateInputObj"]),
+    chatInputSendTextMessage() {
+      console.log("chatInputSendTextMessage");
+      console.warn(this)
+      this.$emit("sendMsgSuper",{ type: IMOperator.TextType, content: this.inputObj.textMessage});
+    },
+    // 聚焦
+    chatInputBindFocusEvent() {
+      console.log("chatInputBindFocusEvent");
+      this.updateInputObj({"inputType": "text"})
+
+    },
+    // 失去焦点
+    chatInputBindBlurEvent() {
+      console.log("chatInputBindBlurEvent");
+      console.log(this.inputObj)
+      if(this.inputObj.textMessage) {
+        this.updateInputObj({
+          "chatInputShowExtra": false,
+          "textMessage": this.inputObj.textMessage
+        })
+      }else {
+        this.updateInputObj({"inputType": "none"})
+      }
+    },
+    chatInputExtraClickEvent() {
+      this.updateInputObj({"chatInputShowExtra": !this.inputObj.chatInputShowExtra})
+    },
   }
 };
 </script>
@@ -104,7 +129,7 @@ input {
 .input-text-voice-super {
   display: flex;
   flex-direction: row;
-  background-color: rgba(0,0,0,0.54);
+  background-color: rgba(0, 0, 0, 0.54);
   width: 100%;
   align-items: center;
   height: 100rpx;

@@ -9,6 +9,8 @@ export default class TextManager {
    */
   showMsg({ msg }) {
     //UI类是用于管理UI展示的类。
+    console.log('----------------showMsg')
+    console.log(msg)
     this._page.UI.updateViewWhenReceive(msg);
   }
 
@@ -18,6 +20,9 @@ export default class TextManager {
    * @param type
    */
   sendOneMsg({ content, type }) {
+    console.log('sendOneMsg------------------')
+    console.log('this._page')
+    console.log(this._page)
     this._page.UI.showItemForMoment(this._page.imOperator.createNormalChatItem({
       type,
       content
